@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>5.5Function类型</title>
+</head>
+<body>
+    <script>
+        // 函数实际上是对象.每个函数都是Function类型的实例
+
+        // 函数声明
+        function sum(num1,num2){
+            return num1+num2
+        }
+        // 函数表达式
+        var sum1 = function(num1,num2){
+            return num1+num2
+        };              //末尾有个冒号,就像声明其他变量一样
+
+        //  函数名仅仅是指向函数的指针,因此函数名与包含对象指针的其他变量没有什么不同(一个函数可能会有多个名字)
+        function interesting(num1,num2){
+            return num1+num2
+        }
+        var anotherFun = interesting;
+        interesting = null;
+        console.log(anotherFun(1,2));           //函数依然能运行
+    </script>
+    <script>
+        // 5.5.2 函数声明和函数表达式
+        // 解析器会率先读取函数声明,使其在执行任何代码之前可用.至于函数表达式,必须等到解析器执行到它所在的代码行才会被解释执行
+
+    </script>
+    <script>
+        // 5.5.3    作为值的函数
+        // 函数名本身就是变量,所以函数也可以作为值来使用
+        // 意味着不仅可以像传递函数一样把一个函数传递给另一个函数,也可以将一个函数作为另一个函数的结果返回
+        function callSome(someFun,someArgument){
+            return someFun(someArgument)
+        }
+
+        function add10(num){
+            return num+10
+        }
+        var num = callSome(add10,10);
+        console.log(num);
+
+
+        function createComparation(propertyName){
+            return function(obj1,obj2){
+                return obj1[propertyName]-obj2[propertyName];
+            }
+        }
+        var data = [{
+            name:'zack',
+            age:30
+        },{
+            name:'w',
+            age:25
+        }]
+        data.sort(createComparation('age'));
+        console.log(data);
+    </script>
+    <script>
+        // 5.5.4    函数内部属性
+        // 函数内部有两个特殊对象,arguments和this
+        // arguments有一个callee的属性,指向拥有这个arguments对象的函数.但是在严格模式中会报错
+
+        function factorial(num){
+            if(num<=1){
+                return 1
+            }
+            return num*(factorial(num-1))
+        }
+
+        console.log(factorial(5));
+
+        //可通过使用arguments.callee避免耦合问题
+        function factorial1(num){
+            if(num<=1){
+                return 1
+            }
+            return num*arguments.callee(num-1)
+        }
+
+        // 接触耦合后这样也不会出问题
+        var trueFactorial = factorial1
+        console.log(trueFactorial(5));
+
+
+        // this
+        // 引用的是函数执行的环境对象,在全局调用的话,this就是window
+        window.color = 'greeen';
+        var o = {color:'blue'};
+        function sayColor(){
+            console.log(this.color);
+        }
+        sayColor();
+        o.sayColor = sayColor;
+        o.sayColor();
+
+
+    </script>
+    <script>
+        // 5.5.5 函数属性和方法
+        // 每个函数包含两个属性:length和prototype
+        // length表示接收的命名参数的个数
+        function sayName(namee){
+
+        }
+        function sum(num1,num2){
+
+        }
+        console.log(sayName.length);
+        console.log(sum.length);
+
+        // // prototype属性是不可枚举的,使用for in 无法发现?
+        // 每个函数包含非继承而来的方法     apply()     call()      用于设置函数体内this的值
+        // apply接受两个参数,一个是运行时的作用域,二是参数数组,第二个参数可以是Array的实例,也可以是arguments对象
+        function applySum1(num1,num2){
+            return sum.apply(this,arguments)
+        }
+        function applySum2(num1,num2){
+            return sum.apply(this,[num1,num2]);
+        }
+        
+        // call和apply一样,唯一的区别就是接收参数的方式不同.传递给函数的参数必须逐个列举出来
+        function callSum1(num1,num2){
+            return sum.call(this,num1,num2)
+        }
+
+        // bind
+        // 创建函数的实例,其this值会被传到bind()函数的值
+        window.color = 'red';
+        var o = {color:'blue'};
+        function sayColor(){
+            console.log(this.color);
+        }
+        var objSayColor = sayColor.bind(o)
+        objSayColor()
+    </script>
+</body>
+</html>

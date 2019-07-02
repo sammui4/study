@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>8. 闭包
+        </title>
+</head>
+<body>
+    <script>
+    // 其实可以这么理解，因为匿名函数，
+    </script>
+    <script>
+        // 闭包
+        function makeFunc() {
+            var name = "Mozilla";
+            function displayName() {
+                console.log(name);
+            }
+            return displayName;
+        }
+
+        var myFunc = makeFunc();
+        myFunc();
+
+        // 这个环境包含了这个闭包创建时所能访问的所有局部变量
+    </script>
+    <script>
+        // 下面是一个更有意思的示例 — makeAdder 函数：
+        function makeAdder(x) {
+            return function(y) {
+                return x + y;
+            };
+        }
+
+        var add5 = makeAdder(5);
+        var add10 = makeAdder(10);
+
+        console.log(add5(2));  // 7
+        console.log(add10(2)); // 12
+
+        // add5 和 add10 都是闭包。它们共享相同的函数定义，但是保存了不同的词法环境。在 add5 的环境中，x 为 5。而在 add10 中，x 则为 10。
+    </script>
+    <div id="size-12">12345</div>
+    <div id="size-14">12345</div>
+    <div id="size-16">12345</div>
+    <script>
+        // 实用的闭包
+        function makeSizer(size){
+            return function(){
+                document.body.style.fontSize = size+'px';
+            }
+        }
+
+        var size12 = makeSizer(12);
+        var size14 = makeSizer(14);
+        var size16 = makeSizer(16);
+
+        document.getElementById('size-12').onclick = size12;
+        document.getElementById('size-14').onclick = size14;
+        document.getElementById('size-16').onclick = size16;
+    </script>
+    <script>
+        // 用闭包模拟私有方法
+        // 使用闭包来定义公共函数，并令其可以访问私有函数和变量
+        var Counter = (function(){
+            var privateCounter = 0;
+            function changeBy(val){
+                privateCounter+=1
+            }
+            return {
+                increment:function(){
+                    changeBy(1)
+                },
+                decrement:function(){
+                    changeBy(-1)
+                },
+                value:function(){
+                    return privateCounter;
+                }
+            }
+        })()
+
+        console.log(Counter.value());
+        Counter.increment();
+        Counter.increment();
+        console.log(Counter.value());
+        Counter.decrement();
+        console.log(Counter.value());
+
+
+
+
+        var makeCounter = function() {
+            var privateCounter = 0;
+            function changeBy(val) {
+                privateCounter += val;
+            }
+            return {
+                increment: function() {
+                changeBy(1);
+                },
+                decrement: function() {
+                changeBy(-1);
+                },
+                value: function() {
+                return privateCounter;
+                }
+            }  
+        }
+        var Counter3 = makeCounter();
+        var Counter4 = makeCounter();
+        console.log(Counter3.value()); /* logs 0 */
+        Counter3.increment();
+        Counter3.increment();
+        console.log(Counter3.value()); /* logs 2 */
+        Counter3.decrement();
+        console.log(Counter3.value()); /* logs 1 */
+        console.log(Counter4.value()); /* logs 0 */
+
+        // 请注意两个计数器 counter1 和 counter2 是如何维护它们各自的独立性的。每个闭包都是引用自己词法作用域内的变量 privateCounter 。
+    </script>
+    <!-- // 在循环中创建闭包：一个常见错误 -->
+    <p id="help">Helpful notes will appear here</p>
+    <p>E-mail: <input type="text" id="email" name="email"></p>
+    <p>Name: <input type="text" id="name" name="name"></p>
+    <p>Age: <input type="text" id="age" name="age"></p>
+    <script>
+        function showHelp(help) {
+            document.getElementById('help').innerHTML = help;
+        }
+
+        function setupHelp() {
+            var helpText = [
+                {'id': 'email', 'help': 'Your e-mail address'},
+                {'id': 'name', 'help': 'Your full name'},
+                {'id': 'age', 'help': 'Your age (you must be over 16)'}
+            ];
+
+            for (var i = 0; i < helpText.length; i++) {
+                var item = helpText[i];
+                document.getElementById(item.id).onfocus = function() {
+                    showHelp(item.help);
+                }
+            }
+        }
+
+        // setupHelp();
+        // 赋值给 onfocus 的是闭包。这些闭包是由他们的函数定义和在 setupHelp 作用域中捕获的环境所组成的。这三个闭包在循环中被创建，但他们共享了同一个词法作用域，在这个作用域中存在一个变量item。当onfocus的回调执行时，item.help的值被决定。由于循环在事件触发之前早已执行完毕，变量对象item（被三个闭包所共享）已经指向了helpText的最后一项。
+    </script>
+    <script>
+        // function showHelp(help) {
+        //     document.getElementById('help').innerHTML = help;
+        // }
+        // function setupHelp() {
+        //     var helpText = [
+        //         {'id': 'email', 'help': 'Your e-mail address'},
+        //         {'id': 'name', 'help': 'Your full name'},
+        //         {'id': 'age', 'help': 'Your age (you must be over 16)'}
+        //     ];
+
+        //     helpText.forEach((val)=>{
+        //         document.getElementById(val.id).onfocus = function() {
+        //             showHelp(val.help);
+        //         }
+        //     })
+        // }
+        // setupHelp();
+    </script>
+    <script>
+        // 解决这个问题的一种方案是使用更多的闭包
+        function showHelp(help) {
+            document.getElementById('help').innerHTML = help;
+        }
+
+        function makeHelpCallback(help) {
+            return function() {
+                showHelp(help);
+            };
+        }
+
+        function setupHelp() {
+            var helpText = [
+                {'id': 'email', 'help': 'Your e-mail address'},
+                {'id': 'name', 'help': 'Your full name'},
+                {'id': 'age', 'help': 'Your age (you must be over 16)'}
+                ];
+
+            for (var i = 0; i < helpText.length; i++) {
+                var item = helpText[i];
+                document.getElementById(item.id).onfocus = makeHelpCallback(item.help);
+            }
+        }
+
+        // setupHelp();
+    </script>
+    <script>
+        //避免使用过多的闭包
+        function showHelp(help) {
+            document.getElementById('help').innerHTML = help;
+        }
+
+        function setupHelp() {
+            var helpText = [
+                {'id': 'email', 'help': 'Your e-mail address'},
+                {'id': 'name', 'help': 'Your full name'},
+                {'id': 'age', 'help': 'Your age (you must be over 16)'}
+                ];
+            for (var i = 0; i < helpText.length; i++) {
+                let item = helpText[i];                                 //使用了let
+                document.getElementById(item.id).onfocus = function() {
+                    showHelp(item.help);
+                }
+            }
+        }
+
+        setupHelp();
+    </script>
+    <script>
+    　　function f1(){
+
+    　　　　var n=999;
+
+    　　　　function f2(){
+    　　　　　　console.log(n); 
+    　　　　}
+
+    　　　　return f2;
+
+    　　}
+
+    　　var result=f1();
+
+    　　result(); // 999
+
+        // 我的理解是，闭包就是能够读取其他函数内部变量的函数。
+        // 它的最大用处有两个，一个是前面提到的可以读取函数内部的变量，另一个就是让这些变量的值始终保持在内存中。
+    </script>
+    <script>
+    　　function f1(){
+
+    　　　　var n=999;
+
+    　　　　nAdd=function(){n+=1}
+
+    　　　　function f2(){
+    　　　　　　console.log(n);
+    　　　　}
+
+    　　　　return f2;
+
+    　　}
+
+    　　var result=f1();
+
+    　　result(); // 999
+
+    　　nAdd();
+
+    　　result(); // 1000
+
+        // 原因就在于f1是f2的父函数，而f2被赋给了一个全局变量，这导致f2始终在内存中，而f2的存在依赖于f1，因此f1也始终在内存中，不会在调用结束后，被垃圾回收机制（garbage collection）回收。
+    </script>
+    <script>
+        // 注意到返回的函数在其定义内部引用了局部变量arr，所以，当一个函数返回了一个函数后，其内部的局部变量还被新函数引用，所以，闭包用起来简单，实现起来可不容易。
+        // 另一个需要注意的问题是，返回的函数并没有立刻执行，而是直到调用了f()才执行。我们来看一个例子：
+        function count() {
+            var arr = [];
+            for (var i=1; i<=3; i++) {
+
+                arr.push(function () {
+                    return i * i;
+                });
+            }
+            return arr;
+        }
+
+        var results = count();
+        var f1 = results[0];
+        var f2 = results[1];
+        var f3 = results[2];
+        f1();
+        f2();
+        f3();
+        // 原因就在于返回的函数引用了变量i，但它并非立刻执行。等到3个函数都返回时，它们所引用的变量i已经变成了4，因此最终结果为16。
+        // 返回闭包时牢记的一点就是：返回函数不要引用任何循环变量，或者后续会发生变化的变量。
+    </script>
+    <script>
+        function count() {
+            var arr = [];
+            for (var i=1; i<=3; i++) {
+                arr.push((function (n) {
+                    return function () {
+                        return n * n;
+                    }
+                })(i));
+            }
+            return arr;
+        }
+
+        var results = count();
+        var f1 = results[0];
+        var f2 = results[1];
+        var f3 = results[2];
+
+        f1(); // 1
+        f2(); // 4
+        f3(); // 9
+    </script>   
+    <script>
+        // 借助闭包，同样可以封装一个私有变量
+        function create_counter(initial) {
+            var x = initial || 0;
+            return {
+                inc: function () {
+                    x += 1;
+                    return x;
+                }
+            }
+        }
+        var c1 = create_counter();
+        c1.inc(); // 1
+        c1.inc(); // 2
+        c1.inc(); // 3
+    </script>
+    <script>
+        // 闭包简单来说就是一个函数访问了它的外部变量。
+        var quo = function(status){
+            return {
+                getStatus: function(){
+                    return status;
+                }
+            }
+        }
+        var newValue = quo('string');
+        newValue.getStatus()
+        // 假如并没有getStatus这个方法，那么quo('sting')结束后，status自动被回收，正是因为返回的匿名对象被一个全局对象引用，那么这个匿名对象又依赖于status，所以会阻止status的释放
+    </script>
+    <script>
+        // 闭包的作用域链包含着它自己的作用域，以及包含它的函数的作用域和全局作用域。
+        function makeAdder(x) {
+            return function(y) {
+                return x + y;
+            };
+        }
+
+        var add5 = makeAdder(5);
+        var add10 = makeAdder(10);
+
+        console.log(add5(2));  // 7
+        console.log(add10(2)); // 12
+
+        // 释放对闭包的引用
+        add5 = null;
+        add10 = null;
+    </script>
+    <script>
+        // 闭包只能取得包含函数中任何变量的最后一个值，这是因为闭包所保存的是整个变量对象，而不是某个特殊的变量。
+        function test(){
+            var arr = [];
+            for(var i = 0;i < 10;i++){
+                arr[i] = function(){
+                    return i;
+                };
+            }
+            for(var a = 0;a < 10;a++){
+                console.log(arr[a]());
+            }
+            console.log(a);         // 没有块级作用域，泄露到出来。由于匿名函数在test内部定义，取值去test内部取值
+        }
+        test(); // 连续打印 10 个 10
+    </script>
+    <script>
+        function test(){
+            var arr = [];
+            for(let i = 0;i < 10;i++){  // 仅在这里作出了改动
+                arr[i] = function(){
+                return i;
+                };
+            }
+            for(var a = 0;a < 10;a++){
+                console.log(arr[a]());
+            }
+        }
+        test(); // 打印 0 到 9
+    </script>
+    <script>
+        // 应用闭包的主要场合是：设计私有的方法和变量
+        // 把有权访问私有变量的公有方法称为特权方法（privileged method）。
+        function Animal(){
+            // 私有变量
+            var series = "哺乳动物";
+            function run(){
+                console.log("Run!!!");
+            }
+            
+            // 特权方法
+            this.getSeries = function(){
+                return series;
+            };
+        }
+
+        // 闭包的缺点就是常驻内存会增大内存使用量，并且使用不当很容易造成内存泄露。
+        // 如果不是因为某些特殊任务而需要闭包，在没有必要的情况下，在其它函数中创建函数是不明智的，因为闭包对脚本性能具有负面影响，包括处理速度和内存消耗。
+    </script>
+    <script>
+        function fun(n,o){
+            console.log(o);
+            return {
+                fun: function(m){
+                return fun(m,n);
+                }
+            };
+        }
+
+        var a = fun(0);  // ?
+        a.fun(1);        // ?        
+        a.fun(2);        // ?
+        a.fun(3);        // ?
+
+        var b = fun(0).fun(1).fun(2).fun(3);  // ?
+
+        var c = fun(0).fun(1);  // ?
+        c.fun(2);        // ?
+        c.fun(3);        // ?
+    </script>
+    <script>
+        function a() { 
+            var i = 0; 
+            function b() { console.log(++i); } 
+                return b;
+        }
+        var c = a();
+        c();
+        // 上面这段代码的特点
+        // 1、函数b嵌套在函数a内部；
+        // 2、函数a返回函数b。
+        // 这样在执行完var c=a()后，变量c实际上是指向了函数b，再执行c()后就会弹出一个窗口显示i的值(第一次为1)。这段代码其实就创建了一个闭包，为什么？因为函数a外的变量c引用了函数a内的函数b，就是说：
+       
+        // 当函数a的内部函数b被函数a外的一个变量引用的时候，就创建了一个闭包。
+        
+    </script>
+
+
+
+
+    <script>
+        //闭包狂想
+        function closeure(a){
+            // function closeure1(a){
+            //     console.log(a)
+            //     return function(){
+            //         a++
+            //     }
+            // }
+            // var add1 = closeure1(a);
+            // console.log(add1());
+            return {
+                add:function(){
+                    a++
+                },
+                show:function(){
+                    console.log(a);
+                }
+            }
+        }
+        var add = closeure(19);
+        add.add();
+        add.show();
+    </script>
+    <script>
+        function closeure1(n){
+            function closeure1in(){
+                n++
+            }
+            closeure1in()
+            return n
+        }
+        console.log(closeure1(2));
+        console.log(closeure1(2));
+    </script>
+</body>
+</html>

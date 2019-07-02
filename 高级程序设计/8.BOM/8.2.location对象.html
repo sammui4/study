@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>location对象</title>
+</head>
+<body>
+    <script>
+        console.log(window.location);
+        // hash         #号后面那些
+        console.log(window.location.hash);
+        // host         服务器名称和端口号
+        console.log(window.location.host);
+        // hostname     服务器名称
+        console.log(window.location.hostname);
+        // href         当前加载的完整url
+        console.log(window.location.href);
+        // pathname     
+        console.log(window.location.pathname);
+        // port         端口号
+        console.log(window.location.port);
+        // protocol      协议
+        console.log(window.location.protocol);
+        // search        url的查询字符串
+        console.log(window.location.search);
+
+        // 记住，修改location的其他属性也可以改变当前加载的页面
+        // 这些方法修改url后，都会在浏览器的历史记录中生成一条新纪录，可通过后退导航至前一个页面。可通过调用replace()方法禁用这种行为
+        // 只接受一个参数，要导航的url
+        window.location.replace('http://www.baidu.com');
+    </script>
+    <script>
+        // 8.2.1查询字符串参数
+        function getQueryStringArgs(){
+            var qs = location.search.length>0?location.search.substr(1):'';
+            args = {};
+            items = qs.length? qs.split('&'):[];
+            item = null,name = null,value = null,i=0,len = items.length;
+            for(i=0;i<len;i++){
+                item = items[i].split("=");
+                name = decodeURIComponent(item[0]);
+                value = decodeURIComponent(item[1]);
+                if(name.length){
+                    args[name] = value
+                }
+            }
+            return args
+        }
+    </script>
+    <script>
+        // 8.2.2
+        // window.reload();        // 重新加载
+        // window.reload(true)      // 从服务器重新加载
+    </script>
+</body>
+</html>

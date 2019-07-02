@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>7.2闭包</title>
+</head>
+<body>
+    <script>
+        function f1(){
+
+    　　　　var n=999;
+
+    　　　　nAdd=function(){n+=1}
+
+    　　　　function f2(){
+    　　　　　　console.log(n);
+    　　　　}
+
+    　　　　return f2;
+
+    　　}
+
+    　　var result=f1();
+
+    　　result(); // 999
+
+    　　nAdd();
+
+    　　result(); // 1000
+        // 原因就在于f1是f2的父函数，而f2被赋给了一个全局变量，这导致f2始终在内存中，而f2的存在依赖于f1，因此f1也始终在内存中，不会在调用结束后，被垃圾回收机制（garbage
+    </script>
+    <script>
+        function compare(value1,value2){
+            if(value1<value2){  
+                value1++;
+                value2--;
+            }else{
+                value1--;
+                value2++;
+            }
+            console.log(value1);
+            console.log(value2);
+        }
+        compare(5,10);
+        compare(5,10);
+
+        // 函数执行完毕后。局部对象被销毁了。不然value1会一直叠加上去的
+    </script>
+    <script>
+        // 函数调用时，会创建一个执行环境和相应的作用域链，然后，使用arguments和其他命名参数的值来初始化函数的活动对象
+        // 执行过程中，为读取和写入变量的值，需要在作用域链中查找变量
+        // 函数执行完毕后，局部活动对象就会被销毁
+        // 
+    </script>   
+    <script>
+            // 闭包是指有权访问另外作用域中的变量的函数
+            // 创建闭包的常见方式，就是在一个函数内部创建另一个函数
+    
+            function createComparisonFunction(propertyName){
+                var a = '123';
+                return function(obj1,obj2){
+                    var value1 = obj1[propertyName];
+                    var value2 = obj2[propertyName];
+                    console.log(a);
+                    return value1-value2
+                }
+            }
+            // 创建函数
+            var createComparisonFunctionInit = createComparisonFunction('age');
+            // 调用函数
+            var result = createComparisonFunctionInit({age:20},{age:30})
+            //解除对匿名函数的引用（释放内存）
+            createComparisonFunctionInit = null;        
+            // 之所以还能访问这个变量，是因为内部函数的作用域中包含createComparisonFunction()的作用域
+            // 在匿名函数从 createComparisonFunction中被返回时，它的作用域被初始化为包含createComparisonFuntion()中定义的所有变量。
+            // 最重要的是，createComparisonFunction()在执行完毕后，其活动对象也不会被销毁，因为匿名函数的作用域依然在引用这个活动对象。
+        </script>
+    <script>
+        // 7.2.1
+        // 闭包只能取得包含函数中任意变量的最后一个值
+        function createFunction(){
+            var result = [];
+            for(var i=0;i<10;i++){              //for循环中声明的变量k即使在for循环执行结束后，也依旧会存在于循环外部的执行环境中。因为没有块级作用域，for语句创建的值会存在循环体外面的执行环境中，所以匿名函数寻找i时只能通过作用域链向上找，那就找到循环后的k了
+                result[i] = function(){
+                    return i
+                }
+            }
+            return result
+        }
+        
+        // 解决办法
+        // 可以通过创建另一个匿名函数强制让闭包的行为符合预期
+        function createFunction1(){
+            var result = [];
+            for(var i=0;i<10;i++){              
+                result[i] = function(num){
+                    return function(){      //相当于多一个闭包，利用函数会创建作用域的特性，让num能够保留在创建的闭包作用域中
+                        return num
+                    }
+                }(i)
+            }
+            return result
+        }
+
+        function createFunction2(){
+            var result = [];
+            for(let i=0;i<10;i++){              
+            result[i] = function(){
+                return i
+                }
+            }
+            return result
+        }
+        var arr = createFunction2();
+        console.log(arr[1]());
+        // createFunction3()
+    </script>
+    <script>
+        // 7.2.2 this对象
+        // this对象是基于函数的执行环境绑定的。
+        // 匿名函数的执行环境具有全局性，因此this对象通常指向window
+        // 可以通过call/apply改变函数执行环境的情况下，this就会指向其他对象
+        var name = 'The window';
+        var object = {
+            name:'My project',
+            getNameFunc:function(){
+                return function(){
+                    return this.name
+                }
+            }
+        }
+        console.log(object.getNameFunc()());
+
+        //可以这样改进
+    </script>
+    <div id="someElement">1</div>
+    <div id="someElement1">2</div>
+    <script>
+        // 7.2.3 内存泄漏???
+        // 如果闭包的作用域中保存着一个HTML元素，那么就意味着该元素无法被销毁
+        function assignHandler(){
+            var n = 1;
+            var element = document.getElementById('someElement');
+            element.onclick = function(){
+                n = n+1;
+                console.log(n);
+                console.log(element.id);
+            }
+        }
+
+        assignHandler();
+        assignHandler();
+        assignHandler();
+        // 以上代码创建了一个作为element元素事件处理程序的闭包，而这个闭包则又创建了一个循环引用。
+        // 由于匿名函数保存了一个对assignHandler()的活动对象的引用，因此就会导致无法减少element的引用数。
+        // 只要匿名函数存在，element的引用数至少也是1
+
+        //可通过稍微改写代码改变
+
+        function assignHandler1(){
+            var element = document.getElementById('someElement1');
+            var id = element.id;
+            element.onclick = function(){
+                console.log(id);
+            }
+            element = null;
+        }
+
+        // 在上面的代码中，通过把element.id的一个副本保存在一个变量中，并且在闭包中引用该变量消除了循环引用，
+        // 闭包会引用包含函数的整个活动对象，而其中包含着element。即使闭包不直接引用element，包含函数的活动对象中依然会保存一个引用。因此，有必要把element变量设置为null。这样就能接触对DOM对象的引用，减少引用数
+    </script>
+    <script>
+        var k1 = 0,k2 = 0,k3 = 0;
+        for(var k=0;k<4;k++){
+            var kn = k;
+            (function(){
+                var kx=k;
+                // setTimeout存在延时
+                setTimeout(()=>{
+                    k1+=k;
+                    k2+=kn;
+                    k3+=kx;
+                    console.log('k',k,'kn',kn,'kx',kx);
+                })
+            })()
+        }
+        setTimeout(()=>{
+            console.log(k1,k2,k3)
+        },10)
+    </script>
+    <script>
+    
+    var k4 = 0,k5 = 0,k6 = 0;
+        for(let k=0;k<4;k++){
+            var kn = k;
+            (function(){
+                var kx=k;
+                setTimeout(()=>{
+                    k4+=k;
+                    k5+=kn;
+                    k6+=kx;
+                    console.log('k',k,'kn',kn,'kx',kx);
+                })
+            })()
+        }
+        setTimeout(()=>{
+            console.log(k4,k5,k6)
+        },10)
+    </script>
+    <script>
+        for (var i = 1; i <= 5; i++) {
+            setTimeout(function timer() {
+                console.log(i)
+            }, i * 1000)
+            console.log(i);
+        }
+    </script>
+</body>
+</html>

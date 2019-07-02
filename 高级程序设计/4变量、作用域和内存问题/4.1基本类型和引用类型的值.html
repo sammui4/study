@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>4.1基本类型和引用类型的值</title>
+</head>
+<body>
+    <script>
+        // 4.1.1 动态的属性
+        // 可以给引用类型的值添加属性，但不能给基本类型的值添加属性
+        var name = 'nig';
+        name.age = 20;
+        console.log(name.age);      //undefined
+
+    </script>
+    <script>
+        // 4.1.2
+        // 复制基本类型的值，复制的变量和被复制的变量互不影响
+        var num = 5;
+        var num1 = num;
+        num1 = 20;
+        console.log(num);
+        console.log(num1);
+
+        // 引用类型和复制
+        // 实则是了一个指针，复制的变量和被复制的变量将引用同一对象，两者间相互影响
+        var obj1 = {
+            name:'w'
+        }
+        var obj2 = obj1;
+        obj2.age = 20;
+        console.log(obj1.age);
+    </script>
+    <script>
+           // 4.1.3传递参数
+        //把函数外部的值复制给函数内部的参数，就跟把值从一个变量复制到另一个变量一样
+        function base(num){
+            num+=10;
+            console.log(num)        //这个参数实则是函数的局部变量,仅仅是拥有相同的值
+        }
+        var num2 = 25;
+        base(num2);
+        console.log(num2);      //  25      基本类型的值，局部变量不会影响到全局变量
+
+        // 引用类型
+        function native(obj){
+            obj.age = 20;
+            console.log(obj);
+        }
+        var obj3 = {
+            name:'w'
+        };
+        native(obj3);
+        console.log(obj3);
+
+        //在这个函数的内部，obj和person引用的是同一个对象
+
+        //再看一个例子
+        function setName(obj,obj1){
+            obj.name = 'mikko';
+            obj = new Object();
+            obj.name = 'w';
+            
+
+            obj1.name = 'triggo';
+            obj1 = {};
+            obj1.name = 'w'
+            console.log(obj);
+            console.log(obj1);
+        }
+
+        var obj4= {};
+        var obj5 = {};
+        setName(obj4,obj5);
+        console.log(obj4);
+        console.log(obj5);
+
+        //在函数内部重新obj时，这个变量引用的就是一个局部对象了。所以即使在函数内部修改了参数的值，原始的引用依然未变。这个局部对象会在函数执行完毕后立即被销毁
+        
+    </script>
+</body>
+</html>

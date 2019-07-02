@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>5.2Array类型</title>
+</head>
+<body>
+    <script>
+        //数组的创建方式
+        //1使用new Array创建，给构造函数传入应该包含的值
+        var clor = new Array('red','bule','green');
+        console.log(clor);
+        
+
+        // 给构造函数传递该数量，该数量会自动变成length属性的值得
+        var arr = new Array(20)
+        console.log(arr.length);
+
+        //2使用字面量
+        var color = ['green','yellow','red'];
+
+        //数组的length属性很有特点，它不是只读的。通过这个项可以从数组的末尾移除项或向数组中添加新项
+        var colors = ['green','blue','red','yellow','black'];
+        colors.length=2;
+        console.log(colors);
+        
+        // 利用length特性也可以方便在数组末尾添加新项
+        var colors1 = ['green','blue','red','yellow','black'];
+        colors1[colors1.length] = 'white';
+        console.log(colors1);
+    </script>
+    <script>
+        //5.2.1检测数组     Array.isArray
+    </script>
+    <script>
+        // 5.2.3转换方法
+        // 所有对象都具有toLocalString()、toString()和valueOf()，三种方法会返回由数组中每个值的字符串形式拼接的一个以逗号间隔的字符串
+        var color = ['red','green','blue'];
+        console.log(color.toString());
+
+        var person1 = {
+            toString:function(){
+                return 'w'
+            },
+            toLocaleString:function(){
+                return 'gennis'
+            }
+        }
+        var person2 = {
+            toString:function(){
+                return 'mook'
+            },
+            toLocaleString:function(){
+                return 'sam'
+            }
+        }
+        var newArr = [person1,person2];
+        console.log(newArr);
+        console.log(newArr.toString());
+        console.log(newArr.toLocaleString());
+
+        //如果使用join方法。可以使用不同的分隔符来构建这个字符串,join只接受一个参数：用作分隔符的字符串，然后返回包含所有数组项的字符串。如果不给join方法传入任何值或给它传入undefined，则使用逗号作为默认分隔符
+        var arr = [1,2,3,4,5];
+        console.log(arr.join(',')); 
+        //如果数组中的某一项是null或者undefined，则在join、toLocaleString()、toString和valueOf()方法返回的结果中以空字符串表示
+        var arr1 = [null,undefined,1,2,3];
+        console.log(arr1.join());
+    </script>
+    <script>
+        // 5.2.3 栈方法
+        // push()方法可以接受收任意数量的参数，逐个添加到数组末尾,然后返回修改后数组的长度
+        // pop()方法则从数组末尾移除最后一项,减少数组的length值，最后返回移除的项
+
+        var arr =[1];
+        console.log(arr.push(2,3,4));
+        console.log(arr);
+        
+        var arr1 = [1,2,3,4,5];
+        console.log(arr1.pop());
+        console.log(arr1);
+    </script>
+    <script>
+        // 5.2.4队列方法
+        // shift可以移除数组中的第一项并返回该项
+        var arr = [1,2,3,4];
+        console.log(arr.shift());
+        console.log(arr);
+
+        // unshift能在前端添加任意个项并返回新数组的长度
+        var color = ['white'];
+        console.log(color.unshift('green','blue','black'));
+        console.log(color);
+
+    </script>
+    <script>
+        //重排序方法    reserve     sort
+        // sort()方法默认会按升序排列数组项，为了实现排序，sort方法会调用每个数组项的toString()转型方法，然后比较得到的字符串
+        var values = [0,1,5,10,15];
+        values.sort();
+        console.log(values);        //
+
+        // sort()方法可以接受一个比较函数作为参数,
+        //如果第一个参数应当在第二个参数之前的，则返回一个负数。如果两个参数相同则返回0，
+        //如果第一个参数应该位于第二个参数之后的则返回一个正数。
+        function compare1(value1,value2){
+            if(value1<value2){
+                return -1;
+            }else if(value1>value2){
+                return 1;
+            }else{
+                return 0
+            }
+        }
+        var value1 = [2,7,3,4,2]
+        value1.sort(compare1)
+        console.log(value1);
+
+        // 对于数值类型或valueOf()方法会返回数字类型的对象类型，可以使用一个更简单的比较函数
+        function compare2(value1,value2){
+            return value2-value1
+        }
+
+        var value2 = [2,7,3,4,2,8];
+        value2.sort(compare2);
+        console.log(value2);
+    </script>
+    <script>
+        // 5.2.6 操作方法
+        // concat()
+        //创建当前数组的一个副本，然后将接收到的参数添加到这个副本的末尾，最后返回新构建的数组。
+        var color = ['red','green','blue'];
+        var color1 = color.concat('black',['yellow','white']);
+        console.log('color1',color1);
+        console.log('color',color);
+
+        // slice()
+        // 只有一个参数，返回从该参数指定位置到当前数组末尾的所有项目。
+        // 如果有两个参数，返回起始位置到结束位置之间的项（不包括结束位置的项）;
+        // 这方法不会影响原始数组
+        var colors = ['red','green','blue','black','yellow','white'];
+        console.log(colors.slice(2));
+        console.log(colors.slice(2,5));
+        console.log('colors',colors)
+        
+        // splice()
+        // 删除，传两个参数，要删除的第一项的位置和要删除的项数
+        var colorss = ['red','green','blue','black','yellow','white'];
+        console.log(colorss.splice(0,2))            //删除的前两位
+        console.log('colorss',colorss); 
+
+        // 插入 提供三个参数：起始位置、0（删除的项数）,要插入的任意数量的项
+        var colorsss = ['red','green'];
+        console.log(colorsss.splice(1,0,'blue','black','yellow','white'));      //[]
+        console.log('colorsss',colorsss);
+        
+        // 替换 提供三个参数，起始位置，要删除的项数，要插入的任意数量的项
+        var colorssss = ['red','green','blue','black','yellow','white'];
+        console.log(colorssss.splice(2,2,'w','interesting','234'));     
+        console.log(colorssss)
+        // splice()方法始终会返回一个数组，包含从原始数组中删除的项,如果没有删除任何项，则返回一个空数组
+
+    </script>
+    <script>
+        // 5.2.7 位置方法
+        // indexOf()和lastIndexOf()
+        // 两种方法都返回要查找的项在数组中的位置，没有找到的发=话返回-1。在比较时，会使用全等操作符，查找的项必须严格相等
+        var array = [{
+            name:'w',
+            age:20
+        },{
+            name:'how',
+            ahe:30
+        }]
+        var obj = array[1];
+        var index = array.indexOf(obj);
+        console.log(index);
+    </script>
+    <script>
+        // 5.2.8 迭代方法
+        // every()      每一项运行指定函数，每一项都为true，才返回true
+        // filter()     每一项运行指定函数，返回该函数返回true的项组成的数组
+        // forEach()    每一项运行指定函数，没有返回
+        // map()        每一项运行指定函数，返回每次函数调用的结果组成的数组
+        // some()       每一项运行指定函数，任一项返回true,则为true
+    </script>
+    <script>
+        // 5.2.9 归并方法
+        // reduce reduceRight()
+        // 接受两个参数，一个在每一项上调用的函数和作为归并基本的初始值。调用的函数接收四个参数、：前一个值，当前值、项的索引和数组对象。
+        // 函数的返回的任何值都会作为第一个参数自动传给下一项
+        var arr = [1,2,3,4,5,6,7,8,9];
+        var add = arr.reduce(function(prev,cur,index,array){
+            return prev+cur
+        },100)
+        console.log(add);
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>7. 函数作用域, 块级作用域和词法作用域</title>
+</head>
+<body>
+    <script>
+        // 如果一个变量在函数体内部申明，则该变量的作用域为整个函数体，在函数体外不可引用该变量：
+        function foo() {
+            var x = 1;
+            x = x + 1;
+        }
+        try {
+            x = x + 2; // ReferenceError! 无法在函数体外引用变量x
+        } catch (error) {
+            console.log(error)
+        }
+
+        // 同函数内部的同名变量互相独立，互不影响：
+        function bar() {
+            var x = 'A';
+            x = x + 'B';
+        }
+
+        //内部函数可以访问外部函数定义的变量
+        function foo1() {
+            var x = 1;
+            function bar() {
+                var y = x + 1; // bar可以访问foo的变量x!
+            }
+            var z = y + 1; // ReferenceError! foo不可以访问bar的变量y!
+        }
+    </script>
+    <script>
+        // 静态作用域与动态作用域
+        // javascript采用词法作用域，函数的作用域在函数定义的时候就决定了。在你写代码时将变量和块作用域写在哪里来决定，也就是词法作用域是静态的作用域，在你书写代码时就确定了
+        // 与词法作用域相对的是动态作用域，函数的作用域在函数调用的时候才决定。
+        // 自由变量要到创建这个函数的那个作用域中取值——是“创建”，而不是“调用”，切记切记
+        var value = 1;
+        function foo() {
+            console.log('foo value',value);     //1
+        }
+
+        function bar() {
+            var value = 2;
+            foo();
+
+            function a(){
+                console.log('a value',value);       //2
+            }
+            a()
+        }
+
+        bar();          
+    </script>
+    <script>
+        // 非匿名自执行函数，函数变量为 只读 状态，无法修改
+        let foo = function() { console.log(1) };
+        (function foo() {
+            foo = 10  // 由于foo在函数中只为可读，因此赋值无效
+            console.log(foo)
+        }())
+    </script>
+</body>
+</html>

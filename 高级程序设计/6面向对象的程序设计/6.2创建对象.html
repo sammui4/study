@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>6.2创建对象</title>
+</head>
+<body>
+    <script>
+        // 工厂模式
+        function factory(name,age,job){
+            var o = {};
+            o.name = name;
+            o.age = age;
+            o.job = job;
+            o.sayName = function(){
+                console.log(this.name)
+            }
+            return o
+        }
+
+        var person1 = factory('w',26,'eningneer');
+        var person2 = factory('klay',23,'doctor');
+        // 无法解决对象识别问题(不知道是怎么创建的);
+
+
+        // 构造函数模式
+        function Person(name,age,job){
+            this.name = name;
+            this.age = age;
+            this.job = job;
+            this.sayName = function(){
+                console.log(this.name)
+            }
+        }
+        var person3 = new Person('w',26,'eningneer');
+        var person4 = new Person('klay',23,'doctor');
+        // 以这种方式调用构造函数实际会经历以下四个步骤
+        // 1.创建新对象
+        // 2.将构造函数的作用域赋予给新对象
+        // 3.执行构造函数中的代码
+        // 4.返回新对象
+
+        // 两个对象的constructor属性都指向Person。constructor用于标识对象类型的(又谁构造出来的)
+        console.log(person3.constructor === Person);
+        console.log(person4.constructor === Person);
+        console.log(person3.__proto__.constructor === Person);
+        console.log(person4.__proto__.constructor === Person);
+
+        // 检测对象类型，instanceof更可靠一些
+        console.log(person3 instanceof Object);
+        console.log(person3 instanceof Person);
+        console.log(person4 instanceof Object);
+        console.log(person4 instanceof Person);
+
+        // 1.把构造函数当作函数
+        //当作构造函数使用
+        var person5 = new Person('aw',26,'eningneer');
+        person5.sayName();
+        // 当作普通函数使用
+        Person('aw',26,'eningneer');                //不使用new操作符调用Person()会让属性和方法都被添加给window对象。因为在全局作用域中调用一个函数时，this对象总是指向window对象
+        window.sayName();
+
+
+
+        //在另外一个作用域中使用
+        var o = {};
+        Person.call(o,'sammui4',26,'axe');
+        o.sayName();
+
+
+
+
+        // 2.构造函数的问题
+        // 问题就是每个方法都要在每个实例上重新创建一次
+        // 函数是对象，所以每定义一个函数，也就是实例化了一个对象
+        //每个实例上的同名函数是不相等的
+        console.log('person3.sayName===person4.sayName',person3.sayName===person4.sayName);
+
+
+    </script>
+    <script>
+        // 原型模式
+        // 每个函数都有一个prototype属性，这个属性是一个指针，指向一个对象。这个对象包含所有特例共享的属性和方法。prototype就是通过调用构造函数而创建的那个对象实例的原型对象
+        // 使用原型对象的好处是可以让所有对象实例共享它所包含的属性和方法（不是new出来的是没有原型对象的）
+
+        function Person1(){
+            Person1.prototype.name = 'nikko';
+            Person1.prototype.age = 29;
+            Person1.prototype.job = 'engineer';
+            Person1.prototype.sayName = function(){
+                // console.log(this);
+                console.log(this.name);
+            }
+            Person1.prototype.setname = function(name){
+                this.name = name;
+            }
+        }
+        // Person1();
+        // console.log(this.name);
+        // console.log(this.age);
+        // console.log(this.job);
+
+
+        var person1 = new Person1();
+        person1.sayName();
+
+
+        // 1.理解原型对象
+        // 只要创建了一个新函数，就能为该函数创建一个prototype属性
+        // 可以通过isPrototypeOf()方法来确定对象之间是否存在这种关系
+        
+        console.log(Person.prototype.isPrototypeOf(person1));   
+
+        // 可以通过Object.getPrototypeOf()方便取得一个对象的原型对象
+        console.log(Object.getPrototypeOf(person1));
+
+        // 当代码读取某个对象的某个属性，会执行一次搜索，如果没有找到，就继续搜索指针指向的原型对象。
+
+        // 虽然可以不能通过对象实例重写原型中的值,在实例中创建该属性，只会屏蔽原型中保存的同名属性。即使设置为null或undefined，也不会恢复其指向原型的连接
+        // 原型中的this不是指的原型对象，而是调用对象。
+        var person2 = new Person1();
+        person2.name = null;
+        person2.sayName();
+        person2.__proto__.sayName()         //还是原型中的值
+
+
+        //我们可以通过delete操作符
+        var person3 = new Person1();
+        person3.setname('w');
+        
+        person3.sayName();
+        delete person3.name;
+        person3.sayName();
+        debugger;
+
+        // hasOwnProperty()检测属性是否存在于实例中,只有存在于对象实例中，才返回true
+        var person4 = new Person1();
+        person4.fuck = 'weekly';
+        console.log(person4.hasOwnProperty('name'));
+        console.log(person4.hasOwnProperty('fuck'));
+
+
+        // 2.原型与in操作符
+        // 两种方式使用in操作符，单独使用和在for in循环使用
+        // 单独使用时，会通过对象能够访问给定属性时返回true,无论该属性存在于实例中还是原型中
+        var person5 = new Person1();
+        person5.fuck = 'weekly';
+        
+        console.log('fuck' in person5);
+
+        // 使用for in循环时，返回的是所有能通过对象访问的，可枚举的属性。包括实例中的特性和原型中的属性
+        var person5 = new Person1();
+        person5.fuck = 'weekly';
+        for(var key in person5){
+            console.log(key);
+        }
+
+        // 要取得对象上所有可枚举的实例属性，可以使用Object.keys()
+        // 接收一个对象作为参数，返回一个包含所有可枚举属性的字符串数组
+
+
+        // 3.更简单的原型语法
+        // 使用一个包含所有属性和方法的对象字面量来重写整个原型
+        // 但是问题在于,consturctor不再指向原来的原型对象了。因为这种写法重写了默认的原型对象
+        function People(){
+
+        };
+        People.prototype = {
+            name:'Nikka',
+            age:29,
+            job:'duck',
+            sayName:function(){
+                console.log(this.name);
+            }
+        };
+        var friend = new People();
+        console.log(friend instanceof People);
+        console.log(friend instanceof Object);  
+        console.log(friend.constructor === People);         //false 
+        console.log(friend.constructor === Object);    
+
+        
+        // 可以通过这种方法来把原型对象设置回去
+        function People1(){
+
+        };
+        People1.prototype = {
+            constructor:People1,
+            name:'Nikka',
+            age:29,
+            job:'duck',
+            sayName:function(){
+                console.log(this.name);
+            }
+        };
+
+        // 4.原型的动态性
+        function People2(){
+
+        };
+        var friend2 = new People2();
+        People2.prototype.name = 'w';
+        People2.prototype.sayName = function(){
+            console.log(this.name);
+        };
+        friend2.sayName();
+
+        // 尽管可以随时为原型添加属性和方法，并且修改能够立即在所有对象实例中反映出来。但是如果是重写对象，那么情况就不一样了
+        function People3(){
+
+        };
+        var friend3 =  new People3();
+        People3.prototype = {
+            constructor:People3,
+            name:'Nikka',
+            age:29,
+            job:'duck',
+            sayName:function(){
+                console.log(this.name);
+            }
+        };
+        try {
+            friend3.sayName()
+        } catch (error) {
+            console.log(error)
+        };
+
+        // 因为重写了原型对象，切断现有原型和任何之前已经存在的对象实例之间的联系
+
+
+        // 6原型对象的问题
+        // 所有实例在默认情况下都将取得相同的属性值。原型模式的一个大问题是由共享产生的
+        function People4(){
+
+        }
+        People4.prototype = {
+            constructor:People4,
+            name:'angle',
+            friends:['w','sam'],
+            sayName:function(){
+                console.log(this.name)
+            }
+        }
+        var friend4 = new People4();
+        var friend44 = new People4();
+        friend4.friends.push('mock');
+        console.log(friend4.friends)
+        console.log(friend44.friends)
+
+
+    </script>
+    <script>
+        // 组合使用构造函数和原型模式
+        function Person(name,age,job){
+            this.name = name;
+            this.age = age;
+            this.job = job;
+            this.friends = ['Shely','Court'];
+        }
+        Person.prototype = {
+            constructor:Person,
+            sayName:function(){
+                console.log(this.name);
+            }
+        }
+        var friend1 = new Person();
+        var friend2 = new Person();
+
+        friend1.friends.push('w');
+        console.log(friend1.friends);
+        console.log(friend2.friends);
+
+        
+    </script>
+</body>
+</html>

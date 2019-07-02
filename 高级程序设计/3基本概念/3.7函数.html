@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>3.7函数</title>
+</head>
+<body>
+    <script>
+        // return之后的任何代码都永远不会执行
+        // return语句可以不带有任何返回值，在这种情况下，函数在停止执行后将返回undefined。这用法用于需要提前停止函数又不需要返回值的情况下
+            function int(){
+                return 
+                console.log(123)
+            }
+            int();
+
+        // 函数体内可通过arguments来访问这个参数数组，从而获取传给函数的每一个参数
+
+        // arguments对象可以与命名参数一起使用
+        function doAdd(num1,num2){
+            if(arguments.length==1){
+                console.log(arguments[0]+20)
+            }else{
+                console.log(num2+120)
+            }
+        }
+        doAdd(20);
+        doAdd(10,20);
+
+        function doDecrease(num1,num2){
+            num1--;
+            console.log(num1);
+            console.log(arguments[0])
+        }
+        var num1 = 20;
+        doDecrease(num1);
+        console.log(num1)
+
+        // arguments还有个有意思的的特点就是它的值永远与对应命名参数的值保持同步。但不意味着两者访问相同的内存空间，它们的内存空间是独立的。
+        // arguments对象的长度是由传入的参数个数决定的，不是由定义函数时的命名参数的个数决定的
+        // 没有传递值的命名参数将自动被赋予undefined
+        
+        
+    </script>
+</body>
+</html>

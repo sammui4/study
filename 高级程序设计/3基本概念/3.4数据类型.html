@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=s, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>3.4数据类型</title>
+</head>
+<body>
+    <script>
+        // 5种简单数据类型  undefined、null、string、number、boolean
+        // 1种复杂数据类型  object
+        // 值类型（基本类型）：字符串（String）、数值（Number）、布尔值（Boolean）、Undefined、Null  （这5种基本数据类型是按值访问的，因为可以操作保存在变量中的实际的值
+        // 引用类型：对象（Object）、数组（Array）、函数（Function
+
+        // 3.4.1 typeof操作符
+        // undefined、boolean、string、number、object、function
+
+    </script>
+    <script>
+        // 3.4.2 undefined
+        // 变量声明了没有赋值
+        // 函数参数并没有传进去
+        // typeof 没有声明或没有赋值的变量
+        // 对象没有赋值的属性，该属性的值为undefined。
+        // 函数没有返回值时，默认返回undefined。
+    </script>
+    <script>
+        // 3.4.4 boolean类型
+        // 数据类型                 转换成true的值                  转换成false的值
+        // boolean                  true                              false
+        // string                   非空字符串                         ""（空字符串）
+        // number                   任何非零数字值                      0和NaN
+        // object                   任何对象                            null
+        // undefined                                                    undefined
+    </script>
+    <script>
+         // 3.4.5 number类型
+        // 1 浮点数值
+        // 对于极大或极小的数值，可以用e表示法，等于e前面的数值乘以10的指数次幂
+        // var num = 3.125e7    31250000
+
+        // 2 数值范围
+        console.log(Number.MAX_VALUE);      // 1.7976931348623157e+308
+        console.log(Number.MIN_VALUE);      // 5e-324
+        // JavaScript 能够准确表示的整数范围在-2^53到2^53之间（不含两个端点），超过这个范围，无法精确表示这个值。
+
+        // 3 NaN
+        // NaN与任何值都不相等
+        // isNaN函数，用于判断是不是“不是数值”，对于对象，先用valueof方法是否可以转为数值，不能的话再用toString，再测试返回值
+
+
+        // 4 数字转换
+        // Number函数
+        // boolean值，true:1 , false:0 
+        // 数值：不变
+        // null：0
+        // undefined：NaN
+        // 字符串：
+        //      只包含数字(包括前面带正号或负号)，将其转化为10进制值
+        //      包含有效的十六进制格式，如'0xf'，转为相同的十进制整数值
+        //      空字符串:0
+        //      其余:NaN
+        // 对象:valueof()方法，再按照前面的规则转。转换的结果是NaN的话，则是调用toString(),再依照前面的规则转换
+
+        console.log(Number('hello world'));
+        console.log(Number(''));
+        console.log(Number('00011'));
+        console.log(Number('0xf'));
+        console.log(Number(true));
+        console.log(Number(false));
+
+
+        // parseInt()
+        // parseInt() 会忽略字符串前面的空格,直到找到第一个非空格字符,并判断它是否是个有效数字；如果不是，该方法将返回 NaN，不再继续执行其他操作。但如果该字符是有效数字，该方法将查看下一位处的字符，进行同样的测试。这一过程将持续到发现非有效数字的字符为止，此时 parseInt() 将把该字符之前的字符串转换成数字。
+        console.log(parseInt('1234blue'));
+        console.log(parseInt(''));
+        console.log(parseInt('0xA'));
+        console.log(parseInt(22.5));
+        console.log(parseInt('070'));
+        console.log(parseInt('0xf'));
+        console.log(parseInt(true));     //NaN
+        //指定了第二个参数，作为转换时使用的多少进制
+        console.log(parseInt('10',2));
+        console.log(parseInt('10',8));
+
+
+        // parseFloat()
+        // 跟parseInt类似
+        // 字符串中第一个小数点有效，以后的小数点的就是无效被忽略的了
+        // 十六进制格式的字符串始终转为0
+        // 跟parseInt的不同时，parseFloat只解析十进制
+        console.log(parseFloat('1234blue'));
+        console.log(parseFloat('0xA'));
+        console.log(parseFloat('22.5'));
+        console.log(parseFloat('1234blue'));
+        console.log(parseFloat('1234blue'));
+    </script>
+    <script>
+        // 3.4.6    String类型
+        var lang = "java";
+        lang = lang +'script'
+        console.log(lang);
+
+        // 3转换为字符串
+        // 数值、布尔值、对象和字符串都有toString方法，null和undefined没有
+        var a
+        var b = null
+        try {
+            console.log(a.toString());
+            console.log(b.toString());
+        } catch (error) {
+            console.log(error);
+        }
+        
+        // 可以传递第二个参数，作为以任意有效进制格式表示的字符串
+        var c = 10;
+        var c1 = {};
+        console.log(c.toString(2));
+        console.log(c.toString(8));
+        console.log(c.toString(10));
+        // 在不知道转换的值是不是null或undefined的情况下，可以使用String()
+        // 如果是null，返回'null'
+        // 如果是undefined，返回'undefined'
+        console.log(String(null));
+        console.log(String(undefined));
+    </script>
+    <script>
+        // 3.4.7 Object
+        // Object的每个实例都具有下列属性和方法
+        // constructor：保存着用于创建当前对象的函数
+        // hasownProperty   检查给定的属性时候在当前的对象属性（非实例的原型中）是否存在
+        // isPrototypeOf    用于检查传入的对象是否当前对象的原型
+    </script>
+</body>
+</html>

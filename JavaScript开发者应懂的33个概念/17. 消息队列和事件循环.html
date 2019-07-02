@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>17. 消息队列和事件循环</title>
+</head>
+<body>
+    <div>
+        
+    </div>
+    <script>
+        // https://segmentfault.com/a/1190000014940904#articleHeader7
+    </script>
+    <script>
+        // console.log('script start');
+
+        // setTimeout(function() {
+        // console.log('setTimeout');
+        // }, 0);
+
+        // Promise.resolve().then(function() {
+        // console.log('promise1');
+        // }).then(function() {
+        // console.log('promise2');
+        // });
+
+        // console.log('script end');
+    </script>
+    <script>
+        // 如何分辨宏任务和微任务？
+        // setTimeout是宏任务，mutation是微任务。
+    </script>
+    <script>
+        // await是一个让出线程的标志。await后面的函数会先执行一遍，等函数返回了值以后(也可以不返回默认undefined),然后就会跳出整个async函数来执行后面js栈的代码。等本轮的宏任务(执行顺序优于本轮微任务)执行完了之后又会跳回到async函数中等待await
+        // async函数返回一个 Promise 对象，可以使用then方法添加回调函数。当函数执行的时候，一旦遇到await就会先返回，等到异步操作完成，再接着执行函数体内后面的语句
+    </script>
+    <script>
+        async function async1(){
+            console.log('async1 start')
+            await async2()
+            console.log('async1 end')
+        }
+        async function async2(){
+            console.log('async2')
+        }
+        console.log('script start')
+        setTimeout(function(){
+            console.log('setTimeout') 
+        },0)  
+        async1();
+        new Promise(function(resolve){
+            console.log('promise1')
+            resolve();
+        }).then(function(){
+            console.log('promise2')
+        })
+        console.log('script end')
+    </script>
+    <script>
+        // script start
+        // async1 start
+        // async2
+        // promise1
+        // script end
+        // async1 end
+        // promise2
+        // setTimeout
+
+    </script>
+</body>
+</html>

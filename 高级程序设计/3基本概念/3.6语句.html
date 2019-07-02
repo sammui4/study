@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>3.6语句</title>
+</head>
+<body>
+    <script>
+        // if语句
+        //会自动调用Boolean()转换函数将这个表达式转换为一个布尔值
+        
+
+        // do-while
+        // 后测试循环语句，在对条件表达式求值之前，至少先执行一次
+
+        // while语句
+        // 前测试循环语句，测试后知道能否被执行，所以循环体内的语句有可能永远不执行
+        var i=1;
+        while (i<20) {
+            i+=2
+        }
+        console.log(i);
+
+        // for循环语句
+        for(var t=0;t<20;t++){
+            console.log(t);
+        }
+
+        // break和continue语句
+        // break会跳出当前循环,continue退出该轮循环，进入下一轮循环
+
+        var  num = 0;
+        for(let k=1;k<10;k++){
+            if(k%5===0){
+                break
+            }
+            num++
+        }
+        console.log(num);       
+
+        var  num1 = 0;
+        for(let i=1;i<10;i++){
+            if(i%5===0){
+                continue
+            }
+            num1++
+        }
+        console.log(num1);   //8       //
+
+
+        //四个十分有趣的例子
+
+        var num2 = 0;
+        for(let b=0;b<10;b++){
+            for(let l=0;l<10;l++){
+                if(b==5 && l==5){
+                    break    
+                }
+                num2++
+            }
+        }
+        console.log(num2);      //95    只是跳出了当前循环，外面那层没跳
+
+
+        var num3 = 0;
+        for(let b=0;b<10;b++){
+            for(let l=0;l<10;l++){
+                if(b==5 && l==5){
+                    continue    
+                }
+                num3++
+            }
+        }
+        console.log(num3);      //99    只是跳出了当前循环，外面那层没跳
+
+
+        //解决方法
+        // break和continue语句都可以与label语句联合使用，从而返回代码中特定的位置。这种联合使用的情况多发生在循环嵌套的情况下s
+        var num4 = 0;
+        outermost:for(let a=0;a<10;a++){
+            for(let b=0;b<10;b++){
+                if(b==5 && a==5){
+                    break outermost    
+                }
+                num4++
+            }
+        }
+        console.log(num4);          //55
+
+        var num5 = 0;
+        outermost:for(let a=0;a<10;a++){
+            for(let b=0;b<10;b++){
+                if(b==5 && a==5){
+                    continue outermost    
+                }
+                num5++
+            }
+        }
+        console.log(num5);          //95
+
+
+        
+        // switch语句
+        // 可以不写break来合并多种情况
+        // switch语句比较值时使用的是全等操作符
+        var klay ='interesting';
+        switch(klay){
+            case 25:
+            case 30:    //合并两种情况
+                console.log('250');
+                break;
+            case 50:
+                console.log('500');
+                break;
+            default: 
+                console.log('other');
+        }
+        // case的值不一定是产量，也可以是变量甚至表达式
+        var numb = 25;
+        switch(true){
+            case numb<0:
+                console.log('<0');
+                break;
+            case numb>=0 && numb<=10:
+                console.log('0~10');
+                break;
+            case numb>10 && numb<=25:
+                console.log('10~25');
+                break;
+            default:
+                console.log('default');
+        }
+    </script>
+</body>
+</html>! 

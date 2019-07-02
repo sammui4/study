@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>7.1递归</title>
+</head>
+<body>
+    <script>
+        // 递归是在一个函数通过名字调用自身的情况下构成的
+        function factorial(num){
+            if(num<=1){
+                return 1
+            }else{
+                return num*factorial(num-1);
+            }
+        }
+        factorial(4);
+
+        //隐患：
+        var anotherFactorial = factorial;
+        factorial = null    //清除引用
+        try {
+            anotherFactorial(4)
+        } catch (error) {
+            console.log(error);
+        }
+        // 强耦合，需要解耦，使用arguments.callee
+
+        function factorial1(num){
+            if(num<=1){
+                return 1
+            }else{
+                return num*arguments.callee(num-1);     // 严格模式会报错
+            }
+        }
+        var anotherFactorial1 = factorial1;
+        factorial1 = null    //清除引用
+        anotherFactorial1(4);
+
+
+        
+        // 可以使用命名函数表达式来达成相同的结果(闭包)
+        var factorial2 = (function f(num){
+            if(num<=1){
+                return 1;
+            }else{
+                return num*f(num-1);
+            }
+        })
+    </script>
+</body>
+</html>

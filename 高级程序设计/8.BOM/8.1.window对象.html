@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>8.1.window对象</title>
+</head>
+<body>
+    <script>
+        // 8.1.3 窗口位置
+        var leftPos = (typeof window.screenLeft == 'number')?window.screenLeft:window.screenX;
+        var topPos = (typeof window.screenTop == 'number')?window.screenTop:window.screenY;
+        //  chrome    0
+        //  firefox  -7
+        //  ie        0
+        //  edge       0
+        console.log(leftPos);   
+        //  chrome    0
+        //  firefox  -7
+        //  ie        79
+        //  edge    
+        console.log(topPos);
+    </script>
+    <script>
+        // 8.1.5 导航和打开窗口
+        // 通过返回的对象操作新打开的窗口
+
+        // 新页面打开
+        var wroxin =  window.open("http://www.baidu.com","_blank","height=200,width=400,top=10,left=10,resizable=false");
+        // 当前页打开
+        // var wroxin =  window.open("http://www.baidu.com","_self","height=200,width=400,top=10,left=10,resizable=false");
+        //
+        // var wroxin =  window.open("http://www.baidu.com","_top","height=200,width=400,top=10,left=10,resizable=false");
+        // var wroxin =  window.open("http://www.baidu.com","_parent","height=200,width=400,top=10,left=10,resizable=false");
+        wroxin.resizeTo(500,600);
+
+        // 关闭新打开的窗口(仅适用于通过window.open()打开的窗口)
+        // wroxin.close();
+
+        // 告诉浏览器新创建的标签页不需要与打开它的标签页通信
+        wroxin.opener = null
+    </script>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>7.4私有变量</title>
+</head>
+<body>
+    <script>
+        // 任何在函数中定义的变量，都可以认为是私有变量，因此不能在函数外部访问到这些变量。
+        // 私有变量包括函数的参数、局部变量和在函数内部定义的其他函数
+        function add(num1,num2){
+            var sum = num1+num2;
+            return sum;
+        }
+        // 这个函数内部有3个私有变量。函数内部可以访问这几个变量，但是外部不能访问，如果在函数内部创建一个闭包，闭包通过自己的作用域链也可以访问这些变量。可以利用这一点来创建访问私有变量的共有方法
+        // 有权访问私有变量和私有函数的共有方法：特权方法
+        // 有两种在对象上创建特权方法的方式。第一种是在构造函数中定义特权方法
+     
+
+        function MyObject(){
+            var privateVar = 10;
+            function privateFun(){
+                return privateFun
+            }
+            this.publicMethod = function(){
+                privateVar++;
+                console.log(privateVar)
+                return privateFun()
+            }
+        }
+        var num =new MyObject();
+        num.publicMethod();
+        num.publicMethod();
+
+        MyObject();                 //不带new使用，this是直接指向window
+        publicMethod();
+        publicMethod();
+
+        // //在函数内部创建的函数被返回到全局环境的某个变量，MyObject的作用域中的变量也会一直保存，因为a一直存在，而a的这个函数的存在依赖于MyObject，所以MyObject中的变量不会被销毁
+        function Person(name){
+            this.getName = function(){
+                return name
+            }
+            this.setName = function(value){
+                name = value;
+            }
+        }
+        var person = new Person('nicholas');
+        console.log(person.getName());
+        person.setName('w');
+        console.log(person.getName());
+
+        var person1 = new Person('nicholas');
+        console.log(person1.getName());
+        // 私有变量name在person的每一个实例都不相同，因为每次调用构造函数都会重新创建者两个方法
+        //只能通过暴露的方法来操作私有变量和私有方法
+    </script>
+    <script>
+        // 7.4.1    静态私有对象
+        // 通过在私有作用域中定义私有变量或函数，同样也可以创建特权方法
+        (function(){
+            var privateVar = 10;
+            function privateFun(){
+                return privateVar
+            }
+            MyObject1 =function (){
+                
+            }
+            MyObject1.prototype.publicMethod = function(){
+                privateVar++
+                return privateFun()
+            }
+        })();
+
+
+        ;(function(){
+            var name = '';
+            Person1 = function(value){
+                name = value;
+            }
+            Person1.prototype.getName = function(){
+                return name
+            }
+            Person1.prototype.setName = function(value){
+                name = value
+            }
+        })()
+
+        var person1 = new Person1('nigger');
+        console.log(person1.getName());
+        person1.setName('w');
+        console.log(person1.getName());
+
+        // 这个模式在定义构造函数时并没有使用函数声明，使用的是函数表达式。因为函数声明只能创建局部函数（初始化未经声明的变量，会自动添加到全局作用域中）
+    </script>
+</body>
+</html>

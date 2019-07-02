@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>4.2执行环境和作用域</title>
+</head>
+<body>
+    <script>
+        // 内部环境可以访问父执行环境中的所有变量,但外部环境不能访问内部环境中的任何变量和函数
+        var color = 'blue';
+        function changeColor(){
+            var anotherColor = 'green';
+            function myColor(){
+                var tempColor = anotherColor;
+                anotherColor = color;
+                color = tempColor
+            }
+            myColor()
+
+        }
+        changeColor();
+        console.log(color);
+
+    </script>
+    <script>
+        //4.2.2 没有块级作用域
+        // 在js中，if语句的变量声明会将变量添加到当前的执行环境（这里是全局环境中）
+        if(true){
+            var colos = 'red'
+        }
+        console.log(colos)
+
+        // for循环中声明的变量k即使在for循环执行结束后，也依旧会存在于循环外部的执行环境中
+        for(var k=0;k<10;k++){};
+        console.log(k);            // 10
+
+
+        // 1.声明变量
+        // 使用var声明的变量会自动添加到最接近的环境中。初始化变量时没有使用var声明的话，该变量会被自动添加到全局环境中
+        function add(num1,num2){
+            var sum1 = num1*num2;
+            sum = num1+num2;
+        }
+        add(30,23);
+        console.log(sum);
+        try {
+            console.log(sum1);
+        } catch (error) {
+            console.log(error)
+        }
+    </script>
+    <script>
+        // 2.查询标识符
+        // 如果在局部变量找到标识符，搜索过程停止.局部环境中存在着同名标识符，就不会使用位于父环境标识符
+        var color = 'blue';
+        function getColor(){
+            var color = 'red';
+            return color
+        }
+        console.log(getColor());
+    </script>
+</body>
+</html>

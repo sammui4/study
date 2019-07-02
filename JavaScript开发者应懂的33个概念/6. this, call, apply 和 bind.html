@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>6. this, call, apply 和 bind</title>
+</head>
+<body>
+    <script>
+        // 如果一个变量在函数体内部申明，则该变量的作用域为整个函数体，在函数体外不可引用该变量：
+        // 如果两个不同的函数各自申明了同一个变量，那么该变量只在各自的函数体内起作用。换句话说，不同函数内部的同名变量互相独立，互不影响：
+        // 由于JavaScript的函数可以嵌套，此时，内部函数可以访问外部函数定义的变量，反过来则不行：
+
+
+        // 情况一：作为对象方法的调用
+        // 函数被调用时先看一看点号左侧。如果有“点”就查看点左侧的对象，这个对象就是 this 的引用。
+        function test1() {
+        console.log(this.x);
+        }
+
+        var obj1 = {};
+        obj1.x = 1;
+        obj1.m = test1;
+
+        obj1.m(); // 1
+
+
+        // 情况二 apply 调用
+        function test3(x) {
+            this.x = x;
+        　console.log(this.x);
+        }
+
+        var obj3 = {};
+        obj3.x = 1;
+        obj3.m = test3;
+        obj3.m.apply() // 2                 apply()的参数为空时，默认调用全局对象。因此，这时的运行结果为2，证明this指的是全局对象。
+
+        obj3.m.apply(obj1)  //1
+        // this 永远指向最后调用它的那个对象
+
+        // 情况三 作为构造函数调用
+        // 如果一个函数用 new 关键字调用，this 就会指向解释器创建的新对象。
+        function test2() {
+        　this.x = 1;
+        }
+
+        var obj = new test2();
+        console.log(obj.x)      // 1
+        console.log(x)          // 2
+        
+        // 情况四：纯粹的函数调用
+        var x = 2;
+        function test() {
+        console.log(this.x);
+        }
+        test();  // 1
+
+
+        // 匿名函数的 this 永远指向 window
+        var name = "windowsName";
+
+        var a = {
+            name : "Cherry",
+
+            func1: function () {
+                console.log(this.name)     
+            },
+
+            func2: function () {
+                setTimeout(  function () {
+                    try {
+                        this.func1()
+                    } catch (error) {
+                        console.log(error);
+                    }
+                    
+                },100 );
+            }
+
+        };
+
+
+            a.func2()     // this.func1 is not a function
+
+       
+
+
+        var name1 = "windowsName";
+
+        function fn1() {
+            var name = 'Cherry';
+            innerFunction();
+            function innerFunction() {
+                console.log(this.name);      // windowsName
+            }
+        }
+
+        fn1()
+
+
+        var name2 = "windowsName";
+
+        function fn2() {
+            var name = 'Cherry';
+            
+            function innerFunction1() {
+                console.log(this.name);      // windowsName
+            }
+            return innerFunction1();
+        }
+
+        fn2();
+
+
+        var name3= "windowsName";
+
+        function fn3() {
+            var name = 'Cherry';
+            
+            return function() {
+                console.log(this.name);      // windowsName
+            }
+        }
+
+        fn3()();
+        
+    </script>
+    <script>
+        //复杂的案例
+        var test = {
+            a : 5,
+            b : 6,
+            sum : function (a,b) {
+                function getA(a) {
+                    this.a = a;         // 在window上增加了一个全局变量a
+                    return this.a;     // 此处this = window
+                }
+                function getB(b){
+                    this.b = b;         //在window上增加了一个全局变量b
+                    return this.b;     // 此处this = window
+                }
+                return getA(a) + getB(b);
+            }
+        }
+        console.log(test.sum(4,3))
+        console.log('内存泄漏：a',window.a);
+        console.log('内存泄漏：b',window.b);
+    </script>
+    <script>
+        // 问题起源
+        function User() {
+        this.name = 'John';
+
+            setTimeout(function greet() {
+                console.log(`Hello, my name is ${this.name}`); // Hello, my name is 
+                console.log(this); // window
+            }, 1000);
+        }
+
+        const user = new User();
+        // reet 里的 this 可以由上一篇文章的四个规则判断出来。对，因为没有显示绑定、隐式绑定或 new 绑定、所以直接得出结论 this 指向 window。但实际上我们想把 this 指向 user 对象！
+    </script>
+    <script>
+        // 箭头函数在自己的作用域内不绑定 this，即没有自己的 this，如果要使用 this ，就会指向定义时所在的作用域的 this 值
+        function User1() {
+        this.name = 'John';
+
+            setTimeout(() => {
+                console.log(`Hello, my name is ${this.name}`); // Hello, my name is John
+                console.log(this); // User {name: "John"}
+            }, 1000);
+        }
+        const user1 = new User1();
+
+    </script>
+    <script>
+        // apply、call、bind 区别
+        // apply 和 call 的区别是 call 方法接受的是若干个参数列表，而 apply 接收的是一个包含多个参数的数组
+        var a ={
+            name : "Cherry",
+            fn : function (a,b) {
+                console.log( a + b)
+            }
+        }
+
+        var b = a.fn;
+        // 函数apply(作用域,[参数数组])
+        b.apply(a,[1,2])     // 3
+
+
+        var a1 ={
+            name : "Cherry",
+            fn : function (a,b) {
+                console.log( a + b)
+            }
+        }
+
+        var b1 = a1.fn;
+        // 函数.call(作用域，参数1,参数2)
+        b1.call(a1,1,2)       // 3
+
+        debugger
+        // bind()方法创建一个新的函数, 当被调用时，将其this关键字设置为提供的值，在调用新函数时，在任何提供之前提供一个给定的参数序列。
+        var a2 ={
+            name : "Cherry",
+            fn : function (a,b) {
+                console.log( a + b);
+                console.log(this);
+            }
+        }
+        var b2 = a2.fn;
+        // 函数.bind(作用域,参数1，参数2)       要主动调用才能
+        b2.bind(a,1,2)()
+    </script>
+    <script>
+        // call、apply和bind的实现 
+        // https://github.com/Abiel1024/blog/issues/16
+    </script>
+
+    <script>
+        debugger;
+        let a10 = {}
+        let fn = function () { console.log('fn',this) }
+        fn.bind().bind(a10)() // => ?                   
+
+
+        // fn.bind().bind(a) 等于
+        let fn2 = function fn1() {
+            return function() {
+                return fn.apply()
+            }.apply(a10)
+        };
+        fn2();
+
+        // 可以从上述代码中发现，不管我们给函数 bind 几次，fn 中的 this 永远由第一次 bind 决定，所以结果永远是 window。
+
+        // 首先，new 的方式优先级最高，接下来是 bind 这些函数，然后是 obj.foo() 这种调用方式，最后是 foo 这种调用方式，同时，箭头函数的 this 一旦被绑定，就不会再被任何方式所改变。
+    </script>
+    <script>
+        const arr = [function() {
+            console.log(this);
+        }];
+        arr[0]();       //可以理解成 arr.0()
+    </script>
+    <script>
+        var length = 10; 
+        function fn4() { 
+        console.log(this.length); 
+        } 
+        var obj4 = { 
+        length: 5, 
+        method: function(fn) { 
+            arguments[0](); //2        可以理解成 =>  arguments.0()       
+            fn(); //10
+            console.log(fn===arguments[0]) //true
+        } 
+        }; 
+        obj4.method(fn4,1);
+    </script>
+</body>
+</html>
