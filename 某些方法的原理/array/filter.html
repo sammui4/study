@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>filter</title>
+</head>
+<body>
+    <script>
+        // 返回值只要是弱等于== true/false就可以了，而非非得返回 === true/false.
+        if(typeof Array.prototype.filter!=='function'){
+            Array.prototype.filter = function(fn,context){
+                var arr = [];
+                if(typeof fn ==='function'){
+                    for(var i=0;i<this.length;i++){
+                        fn.call(context,this[i],i,this) && arr.push(this[k])
+                    }
+                }
+                return arr
+            }
+        }
+    </script>
+</body>
+</html>

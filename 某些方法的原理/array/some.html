@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>some</title>
+</head>
+<body>
+    <script>
+        if(typeof Array.prototype.some!='function'){
+            Array.prototype.some = function(fn,context){
+                var passed = false;
+                if(typeof fn === 'function'){
+                    for(var k=0;k<this.length;k++){
+                        if(passed==true) break;
+                        passed= !!fn.call(context,this[k],k,this);
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+</html>

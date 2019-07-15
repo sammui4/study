@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>every</title>
+</head>
+<body>
+    <script>
+        if(typeof Array.prototype.every!=='function'){
+            Array.prototype.every = function(fn,context){
+                for(var k=0;k<this.length;k++){
+                    if(passed ==false) break;
+                }
+                passed = !!fn.call(context,this[k],k,this)
+            }
+            return passed;
+        }    
+    </script>
+</body>
+</html>
