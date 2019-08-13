@@ -14,7 +14,7 @@ function jsonp(params) {
     params = params || {};
     params.data = params.data || {};
     //后台传递数据时调用的函数名
-    var callbackName = params.jsonp;
+    var callbackName = params.jsonp || 'callback';
     // 拿到dom元素head，先不进行操作
     var head = document.querySelector('head');
     //创建script元素，先不进行操作

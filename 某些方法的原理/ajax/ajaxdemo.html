@@ -47,11 +47,9 @@
         //这个是jsonp的请求demo
         jsonp({
             url: 'http://127.0.0.1:3000/jsonp',
-            jsonp: 'callback',
             data: {
-                name: 'jgchen',
-                stuNo: 2016130201,
-                method: 'jsonp'
+                name: 'laona',
+                phone: 110,
             },
             success(res) {
                 console.log('jsonp success:', res);
@@ -61,6 +59,10 @@
             }
         })
 
+
+        function int(){
+            console.log(123)
+        }
     </script>
 
 </body>
