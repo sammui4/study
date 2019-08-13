@@ -11,6 +11,7 @@
 <body>
     <script src="./ajax.js"></script>
     <script src="./jsonp.js"></script>
+    <script src="./jsonpPromise.js"></script>
 
     <script>
         //这个是ajax的get跟post请求demo
@@ -45,26 +46,40 @@
             }
         })
         //这个是jsonp的请求demo
-        jsonp({
+        // jsonp({
+        //     url: 'http://127.0.0.1:3000/jsonp',
+        //     data: {
+        //         name: 'laona',
+        //         phone: 110,
+        //     },
+        //     success(res) {
+        //         console.log('jsonp success:', res);
+        //     },
+        //     error(err) {
+        //         console.log(err);
+        //     }
+        // })
+
+
+    </script>
+    <script>
+        jsonps({
             url: 'http://127.0.0.1:3000/jsonp',
             data: {
                 name: 'laona',
-                phone: 110,
+                phone: 120,
             },
-            success(res) {
-                console.log('jsonp success:', res);
-            },
-            error(err) {
-                console.log(err);
-            }
+            jsonp:'interesting'
+        }).then((res)=>{
+            console.log('jsonP promise',res)
+        }).catch(()=>{
         })
-
-
-        function int(){
-            console.log(123)
+    </script>
+    <script>
+        function callback(res){
+            console.log(res);
         }
     </script>
-
 </body>
 
 </html>
