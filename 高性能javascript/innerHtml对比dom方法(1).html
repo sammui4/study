@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div id="here"></div>
+  <script>
+    function tableInnerHtml(){
+      console.time();
+      var i,h = ['<table border="1" width="100%">'];
+      h.push('<thead>');
+      h.push('<tr><th>id<\/th><th>yes?<\/th>name<\/th><th>url<\/th><th>action<\/th><\/tr>');
+      h.push('<\/thead>');
+      h.push('<tbody>');
+      for(i=1;i<=10000;i++){
+        h.push('<tr><td>');
+        h.push('<i>');
+        h.push('<\/td><td>');
+        h.push('interesting');
+        h.push('<\/td><td>');
+        h.push('call me w');
+        h.push('<\/td><td>');
+        h.push('<a href="www.baidu.com"><\/a>');
+        h.push('<\/td><td>');
+        h.push('<ul>');
+        h.push('<li>edit</li>');
+        h.push('<li>delete</li>');
+        h.push('<\/ul>');
+        h.push('<\/td>');
+        h.push('<\/tr>');
+      }
+      h.push('<\/tbody>');
+      h.push('<\/table>');
+      document.getElementById('here').innerHTML = h.join('');
+      console.timeEnd();
+    }
+
+    tableInnerHtml()
+  </script>
+</body>
+</html>

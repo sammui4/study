@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div id="here"></div>
+  <script>
+    function tableDom(){
+      console.time();
+      var i,table,thead,tbody,tr,th,rd,a,ui,li;
+      tbody = document.createElement('tbody');
+      for(i=1;i<=10000;i++){
+        tr = document.createElement('tr');
+        td = document.createElement('td');
+        td.appendChild(document.createTextNode((i%2) ?'yes':'no'));
+        tr.appendChild(td);
+        td = document.createElement('td');
+        td.appendChild(document.createTextNode(i));
+        tr.appendChild(td);
+        td = document.createElement('td');
+        td.appendChild(document.createTextNode('my name is w'));
+        tr.appendChild(td);
+
+        a = document.createElement('a');
+        a.setAttribute('href','www.baidu.com');
+        a.appendChild(document.createTextNode('monk'));
+        td = document.createElement('td');
+        td.appendChild(a);
+        tr.appendChild(td);
+
+        ul = document.createElement('ul');
+        a = document.createElement('a');
+        a.setAttribute('href','www.baidu.com');
+        a.appendChild(document.createTextNode('edit'));
+        li = document.createElement('li');
+        li.appendChild(a);
+        ul.appendChild(li);
+        a = document.createElement('a');
+        a.setAttribute('href','www.baidu.com');
+        a.appendChild(document.createTextNode('delete'));
+        li = document.createElement('li');
+        li.appendChild(a);
+        ul.appendChild(li);
+        td = document.createElement('td');
+        td.appendChild(ul);
+        tr.appendChild(td);
+
+        tbody.appendChild(tr);
+
+      }
+      tr = document.createElement('tr');
+      th = document.createElement('th');
+      th.appendChild(document.createTextNode('yes'));
+      tr.appendChild(th);
+      th = document.createElement('th');
+      th.appendChild(document.createTextNode('id'));
+      tr.appendChild(th);
+      th = document.createElement('th');
+      th.appendChild(document.createTextNode('name'));
+      tr.appendChild(th);
+      th = document.createElement('th');
+      th.appendChild(document.createTextNode('url'));
+      tr.appendChild(th);
+      th = document.createElement('th');
+      th.appendChild(document.createTextNode('action'));
+      tr.appendChild(th);
+
+      thead = document.createElement('thead');
+      thead.appendChild(tr);
+      table = document.createElement('table');
+      table.setAttribute('border',1);
+      table.setAttribute('width','100%');
+      table.appendChild(thead);
+      table.appendChild(tbody);
+
+      document.getElementById('here').appendChild(table);
+      console.timeEnd();
+    }
+    tableDom()
+  </script>
+</body>
+</html>

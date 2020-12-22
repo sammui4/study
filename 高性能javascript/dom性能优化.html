@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    function collectionGlobal(){
+      var coll = document.getElementById('div'),
+      len = coll.length,
+      name = '',nodeType = '',tagName = ''
+      for(var count = 0;count<len;count++){
+        name = document.getElementsByTagName('div')[count].nodeName;
+        nodeType = document.getElementsByTagName('div')[count].nodeType;
+        tagName = document.getElementsByTagName('div')[count].tagName;
+
+      }
+      return name;
+    }
+
+    function collectionGlobalTwo(){
+      var coll = document.getElementById('div'),
+      len = coll.length,
+      name = '',nodeType = '',tagName = ''
+      for(var count = 0;count<len;count++){
+        name = coll[count].nodeName;
+        nodeType = coll[count].nodeType;
+        tagName = coll[count].tagName;
+
+      }
+      return name;
+    }
+
+    function collectionGlobalThree(){
+      var coll = document.getElementById('div'),
+      len = coll.length,
+      name = '',nodeType = '',tagName = '',el = null;
+      for(var count = 0;count<len;count++){
+        el = coll[count]
+        name = el.nodeName;
+        nodeType = el.nodeType;
+        tagName = el.tagName;
+
+      }
+      return name;
+    }
+  </script>
+</body>
+</html>

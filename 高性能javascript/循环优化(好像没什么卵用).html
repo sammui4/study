@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>循环优化</title>
+</head>
+<body>
+  <script>
+    var a = 0;
+    // 
+    var items =new Array(200000).fill(1);
+    var length = items.length
+    console.time('a1');
+    for(let i = 0;i<length;i++){
+      process(items)
+    };
+    console.timeEnd('a1');
+
+    console.time('a2');
+    // 减少属性查找并反转
+    for(let i = length;i--;){
+      process(items)
+    };
+    console.timeEnd('a2');
+
+     // 达夫设备
+    function process(v){
+      a++
+  　}
+    console.time('a3');
+    var iterations = Math.floor(length / 8),
+　　　　　　　　　　　　startAt = length % 8,
+　　　　　　　　　　　　　   index = 0;
+    do {  
+　　　　switch(startAt){
+　　　　　　　　　　case 0: process(items[index++]);
+　　　　　　　　　　case 7: process(items[index++]);
+　　　　　　　　　　case 6: process(items[index++]);
+　　　　　　　　　　case 5: process(items[index++]);
+　　　　　　　　　　case 4: process(items[index++]);
+　　　　　　　　　　case 3: process(items[index++]);
+　　　　　　　　　　case 2: process(items[index++]);
+　　　　　　　　　　case 1: process(items[index++]);
+　　　　}
+　　　　startAt = 0;
+　　} while (iterations--);
+    console.timeEnd('a3');
+
+
+    console.time('a4');
+    items.forEach(v=>{
+      process()
+    })
+    console.timeEnd('a4');
+
+    console.log(a)
+  </script>
+</body>
+</html>

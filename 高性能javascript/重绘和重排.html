@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    // 减少重绘和重排，合并多次对DOM和样式的修改，然后一次处理掉
+    // 改变样式
+    var el = document.getElementById('myDiv');
+    el.style.borderLeft = '1px';
+    el.style.borderRight = '2px';
+    el.style.padding = '5px';
+
+    //
+    var el =document.getElementById('myDiv1');
+    el.style.cssText = 'border-left:1px;border-right:20px;padding:5px;'
+
+    // 批量修改dom
+    // 1.使元素脱离文档流
+    // 2.对其应用多重改变
+    // 3.把元素带回文档中
+
+    // 用于更新指定节点数据的通用函数
+    function appendDataToElement(appendToElement,data){
+      for(var i=0,max = data.length;i<max;i++){
+        div = document.createElement('div');
+        div.appendChild(document.createTextNode(i));
+        appendDataToElement(div);
+      }
+    }
+    var ul = document.getElementById('myList');
+    appendDataToElement(ul,data);   //这样每push进去一次就会导致重排
+
+    //更好的方法
+    var ul1 = document.getElementById('myList');
+    ul1.style.display = 'none';
+    appendDataToElement(ul1,data);
+    ul1.style.display = 'block';
+
+    // 另外一种减少重排次数的方法,在文档之外创建并更新一个文档片段
+    var fragMent = document.createDocumentFragment();
+    appendDataToElement(fragMent,data);
+    document.getElementById('myList').appendChild(fragMent);
+
+    //第三种就是为需要修改的节点创建一个备份，然后对副本进行操作，操作完成后，就用行的节点替代旧的节点
+    var old = document.getElementById('myList');
+    var clone = old.cloneNode(true);
+    appendToElement(clone,data);
+    old.parentNode.replaceChild(clone,old);
+
+
+    // 缓存布局信息
+    function stopAnimation(){
+
+    }
+    // 低效的
+    var myElement = document.getElementById('myElement');
+    myElement.style.left = 1+myElement.offsetLeft+'px';
+    myElement.style.top = 1+myElement.offsetTop+'px';
+    if(myElement.offsetLeft>=500){
+      stopAnimation()
+    }
+
+    // 高效的
+
+    var currentLeft = myElement.offsetLeft;
+    var currentTop = myElement.offsetTop;
+    currentLeft++;
+    currentTop++;
+    myElement.style.left = currentLeft + 'px';
+    myElement.style.top  = currentTop + 'px';
+    if(currentLeft>=500){
+      stopAnimation()
+    }
+
+    // 避免重排
+    // 1、使用绝对位置定位页面上的动画元素，将其脱离文档流
+    // 2、让元素动起来，当它扩大时，会临时覆盖部分页面。但这只是页面一个小区域的重绘过程，不会产生重拍并重绘页面的大部分内容。
+    // 3、当动画结束时恢复定位、从而只会下移一次文档的其他元素
+
+    // 大量使用:hover元素
+  </script>
+</body>
+</html>
