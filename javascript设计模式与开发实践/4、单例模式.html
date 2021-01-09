@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>4、单例模式</title>
+</head>
+<body>
+  <div id="loginBtn">登录按钮</div>
+  <script>
+    // 透明的单例模式
+
+    // 4.3用代理实现单例模式
+    var CreatrDiv = function(html){
+      this.html = html;
+      this.init();
+    };
+
+    CreatrDiv.prototype.init = function(){
+      var div = document.createElement('div');
+      div.innerHTML = this.html;
+      document.body.appendChild(div);
+    }
+
+    // 引入代理类
+    var ProxySingletonCreatrDiv = (function(){
+      var instance;
+      return function(html){
+        if(!instance){
+          instance = new CreatrDiv(html);
+        }
+        return instance;
+      }
+    })();
+
+    var a = new ProxySingletonCreatrDiv('seven1');
+    var b = new ProxySingletonCreatrDiv('seven2');
+    console.log(a===b)
+
+
+    // 4.5 惰性单例
+
+    var getSingle = function(fn){
+      var result;
+      return function(){
+        return result || (result = fn.apply(this,arguments))
+      }
+    }
+
+    var createLoginLayer = function(){
+      var div = document.createElement('div');
+      div.innerHTML = '登录浮窗';
+      div.style.display = 'none';
+      document.body.appendChild(div)
+      return div
+    }
+
+    var createBundleRenderer = getSingle(createLoginLayer);
+
+    document.getElementById('loginBtn').onclick = function(){
+      var loginer = createBundleRenderer();
+      loginer.style.display = 'block'
+    }
+  </script>
+</body>
+</html>

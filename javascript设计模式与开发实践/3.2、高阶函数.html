@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3.2、高阶函数</title>
+</head>
+<body>
+  <div id="div1">1234567</div>
+  <script>
+    // 函数作为参数传递
+    var appendDiv = function(){
+      for(var i=0;i<100;i++){
+        var div = document.createElement('div');
+        div.innerHTML = i;
+        document.body.appendChild(div);
+        div.style.display = 'none';
+      }
+    }
+
+    // 改造
+
+    var appendDivOne = function(callback){
+      for(var i=0;i<100;i++){
+        var div = document.createElement('div');
+        div.innerHTML = i;
+        document.body.appendChild(div);
+        if(typeof callback === 'function'){
+          callback(div);
+        }
+      }
+    }
+    appendDivOne(function(node){
+      node.style.display = 'none';
+    });
+
+
+    // 作为返回值输出
+    // 判断数据的类型
+    var isType = function (type){
+      return function(obj){
+        return Object.prototype.toString.call(obj) === '[object ' + type +']';
+      }
+    };
+    var isString = isType('String');
+    var isArray = isType('Array');
+    var isNumber = isType('Number');
+    // console.log(isArray([1,2,3,4]))
+
+    // 或者批量注册
+    var Type = {};
+    var typeArray = ['String','Array','Number'];
+    for(var i=0,type;type =typeArray[i++];){
+      (function(type){
+        Type['is'+type] = function(obj){
+          return Object.prototype.toString.call(obj) === '[object ' + type +']';
+        }
+      })(type)
+    };
+
+    // console.log(Type.isArray([1,2,3]));
+
+
+    // AOP
+    Function.prototype.before = function(beforefn){
+      var _self = this;
+      return function(){
+        // beforefn()
+        // beforefn.apply(null,arguments); 
+        beforefn.apply(this,arguments);       // 执行代理函数.不修正this和传入arguments的话，都会丢失掉
+        return _self.apply(this,arguments)    // 执行原函数
+        // return this()    // 执行原函数
+
+      }
+    }
+
+    Function.prototype.after = function(afterfn){
+      var _self = this;
+      return function(){
+        // beforefn()
+        // beforefn.apply(null,arguments); 
+        var temp = _self.apply(this,arguments);
+        afterfn.apply(this,arguments);       // 执行代理函数.不修正this和传入arguments的话，都会丢失掉
+        return temp    // 执行原函数
+      }
+    }
+
+    var arr = [1,2,3,4]
+    var func = function(v){
+      console.log(2);
+      console.log(this);
+      console.log(v);
+    }
+    // func(arr)
+    var obj = {}
+
+    obj.func1 =  func.before(function(arr){
+      console.log(1);
+      console.log(this);
+      console.log(arr);
+    }).after(function(arr){
+      console.log(3)
+      console.log(this);
+      console.log(arr);
+    })
+
+    obj.func1(arr);
+
+    // 其他应用
+    var cost = (function(){
+      var args = [];
+      return function(){
+        if(arguments.length===0){
+          var money = 0;
+          for(var i=0,l = args.length;i<l;i++){
+            money+= args[i];
+          }
+          return money
+        }else{
+          [].push.apply(args,arguments)
+          // Array.prototype.push.apply(args,arguments)
+        }
+      }
+    })();
+    cost(100);
+    cost(200);
+    cost(300);
+    console.log(cost());
+
+    // 编写成通用currying
+    var currying = function(fn){
+      var args = [];
+      return function(){
+        if(arguments.length==0){
+          return fn.apply(this,args);
+        }else{
+          [].push.apply(args,arguments);
+          return arguments.callee
+        }
+      }
+    };
+    var costCurrying = (function(){
+      var money = 0;
+      return function(){
+        for(var i=0,l = arguments.length;i<l;i++){
+          money+=arguments[i]
+        }
+        return money;
+      }
+    })();
+
+    var costCurringInstance = currying(costCurrying);
+    costCurringInstance(100);
+    costCurringInstance(200);
+    costCurringInstance(300);
+    costCurringInstance(400);
+    console.log(costCurringInstance());
+
+
+    Function.prototype.uncurrying = function(){
+      var self = this;
+      return function(){
+        var obj = Array.prototype.shift.call(arguments);
+        return self.apply(obj,arguments)
+      }
+    }
+
+
+    var throttle = function(fn,intercal){
+      var _self = fn,timer,firstTime = true;
+      return function(){
+        var args = arguments,_me = this;
+        if(firstTime){
+          _self.apply(_me,args);
+          return firstTime = false;
+        }
+        if(timer){
+          return false;
+        }
+        timer = setTimeout(function(){
+          clearTimeout(timer);
+          timer = null;
+          _self.apply(_me,args);
+        },intercal||500)
+      }
+    }
+
+    window.onresize = throttle(function(){
+      console.log(1)
+    },500);
+
+    // 分时函数
+    var timeChunk = function(ary,fn,count){
+      var obj,t;
+      var len = ary.length;
+      var start = function(){
+        for(var i=0;i<Math.min(count|| 1,ary.length);i++){
+          var obj = ary.shift();
+          fn(obj);
+        }
+      }
+      return function(){
+        t = setInterval(function(){
+          if(ary.length===0){
+            return clearInterval(t);
+          }
+          start();
+        }, 200);
+      }
+    };
+
+    var ary = [];
+    for(vari=1;i<=1000;i++){
+      ary.push(i);
+    }
+    var renderFriendList = timeChunk(ary,function(n){
+      var divs = document.createElement('div');
+      divs.innerHTML = n;
+      document.body.appendChild(divs);
+    })
+    renderFriendList();
+
+
+    // 惰性加载函数
+    var addEvent = function(elem,type,handler){
+      if(window.addEventListener){
+        addEvent = function(elem,tyoe,handler){
+          elem.addEventListener(type,handler,false);
+        }
+      }else if(window.attachEvent){
+        addEvent = function(elem,type,handler){
+          elem.attachEvent('on'+type,handler)
+        }
+      }
+      addEvent(elem,type,handler)
+    };
+
+    var div = document.getElementById('div1');
+    addEvent(div,'click',function(){
+      console.log(123)
+    })
+  </script>
+</body>
+</html>
