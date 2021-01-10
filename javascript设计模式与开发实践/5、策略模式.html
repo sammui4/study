@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div style="position:absolute;background:blue;top:0;left:0" id="div">方块</div>
+  <div style="magrin-top:50px">
+    <form id="registerForm" method="post">
+      请输入用户名:<input name="userName" class="" value="" type="text"></input>
+      请输入密码<input name="password" class="" value="" type="text"></input>
+      请输入手机号码:<input name="phoneNumber" class="" value="" type="text"></input>
+      <button>提交</button>
+    </form>
+    <div id="click">提交</div>
+  </div>
+  <script>
+    // 一个简单的策略模式
+    var strategies = {
+      'S':function(salary){
+        return salary *4
+      },
+      'A':function(salary){
+        return salary *3
+      },
+      'B':function(salary){
+        return salary *2
+      }
+    }
+
+    var calculateBonus = function(level,salary){
+      return strategies[level](salary)
+    }
+
+    console.log(calculateBonus('S',2000));
+    console.log(calculateBonus('B',1000));
+
+    var tween = {
+      linear:function(t,b,c,d){
+        return c*t/d+b;
+      },
+      easeIn:function(t,b,c,d){
+        return c*(t/=d)*t+b;
+      },
+      strongEaseIn:function(t,b,c,d){
+        return c*(t/=d) *t*t*t*t+b;
+      },
+      strongEaseOut:function(t,b,c,d){
+        return c*((t= t/d-1)*t*t*t*t+1)+b;
+      },
+      sineaseIn:function(t,b,c,d){
+        return c*(t/=d)*t*t+b;
+      },
+      sineaseOut:function(t,b,c,d){
+        return c*((t = t/d-1)*t*t+1)+b;
+      }
+    };
+
+
+    var Animate = function(dom){
+      this.dom = dom;               // 进行运动的dom节点
+      this.startTime = 0;           // 动画开始时间
+      this.startPos = 0;            // 动画开始时，dom节点的位置
+      this.endPos = 0;              // 动画结束时，dom节点的位置
+      this.propertyName = null;     // dom节点需要被改变的css属性名
+      this.easing = null;           // 缓动算法
+      this.duration = null;         // 动画持续时间
+    }
+    
+
+    /*
+      启动动画函数
+      propertyName  要改变的css属性名
+      endPos        小球运动的目标位置
+      duration      动画持续时间
+      easing        缓冲算法
+    */
+    Animate.prototype.start = function(propertyName,endPos,duration,easing){
+      this.startTime = +new Date();
+      this.startPos = this.dom.getBoundingClientRect()[propertyName];
+      this.propertyName = propertyName;
+      this.endPos = endPos;
+      this.duration = duration;
+      this.easing = tween[easing];
+      
+      var self = this;
+      var timeId = setInterval(function(){      // 启动定时器，开始执行动画
+        if(self.step()===false){                // 若动画结束，则清除定时器
+          clearInterval(timeId);
+        }
+      },19) 
+    }
+
+    // 小球每一帧要做的事情
+    Animate.prototype.step = function(){
+      var t = +new Date();
+      if(t>=this.startTime+this.duration){
+        this.update(this.endPos);
+        return false
+      }
+      var pos = this.easing(t-this.startTime,this.startPos,this.endPos-this.startPos,this.duration);
+      // pos为小球位置
+      this.update(pos);
+    }
+
+    // 更新小球css属性
+    Animate.prototype.update = function(pos){
+      this.dom.style[this.propertyName] = pos+'px'
+    }
+
+    var div = document.getElementById('div');
+    var animateInstnce = new Animate(div);
+    animateInstnce.start('left',500,1000,'strongEaseOut');
+    // animateInstnce.start('top',1000,500,'strongEaseIn');
+  </script>
+
+  <script>
+    var isEmpty = (v)=>v===undefined || v===''
+    // 5.5 更广义的算法
+    // 用策略模式重构表单验证
+    var strategies = {
+      isNonEmpty:function(value,errorMsg){
+        console.log(value)
+        console.log(isEmpty(value));
+        console.log(errorMsg)
+        if(isEmpty(value)){
+          return errorMsg
+        }
+
+      },
+      minLength:function(value,length,errorMsg){
+        if(value.length<length){
+          return errorMsg
+        }
+      },
+      isMobile:function(value,errorMsg){
+        if(!/(^1[3][5][8][0-9]-{9}$)/.test(value)){
+          return errorMsg
+        }
+      }
+    }
+
+    var Validator = function(){
+      this.cache = [];
+    };
+
+    Validator.prototype.add = function(dom,rule,errorMsg){
+      var ary = rule.split(':');          // 把strategy和参数分开
+      this.cache.push(function(){         
+        var strategy = ary.shift();       
+        ary.unshift(dom.value);
+        ary.push(errorMsg);
+        console.log(ary)
+        return strategies[strategy].apply(dom,ary);
+      });
+    }
+
+    Validator.prototype.start = function(){
+      for(var i=0,validataFunc;validataFunc = this.cache[i++];i++){
+        var msg = validataFunc();
+        if(msg){
+          return msg
+        }
+      }
+    }
+
+    // 最后验证
+    var registerForm = document.getElementById('registerForm');
+    var click = document.getElementById('click');
+    var validataFunc = function(){
+      var validator = new Validator();
+      validator.add(registerForm.userName,'isNonEmpty','用户名不能为空');
+      validator.add(registerForm.password,'minLength:6','密码长度不能少于6位');
+      validator.add(registerForm.phoneNumber,'isMobile','手机号码格式不正确');
+      var errorMsg = validator.start();       // 获得校验结果
+      return errorMsg;                        // 返回校验结果
+    }
+
+    
+    click.onclick = function(){
+      var errorMsg = validataFunc();          // 有值说明不通过
+      if(errorMsg){ 
+        alert(errorMsg)
+        return false
+      }
+    };
+
+  </script>
+</body>
+</html>
