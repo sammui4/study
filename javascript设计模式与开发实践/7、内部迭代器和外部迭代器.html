@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>7、内部迭代器和外部迭代器</title>
+</head>
+<body>
+  <script>
+    // 内部迭代器
+    var each = function(ary,callback){
+      for(var i=0,l = ary.length;i<l;i++){
+        callback.call(ary[i],i,ary[i]);     // 把下标和元素当作参数传给callback函数
+
+      }
+    };
+
+    each([1,2,3],function(i,n){
+      console.log([i,n])
+    })
+
+
+    // 外部迭代器
+    var Interator = function(obj){
+      var current = 0;
+      
+      var next = function(){
+        current++
+      }
+
+      var isDone = function(){
+        return current>=obj.length;
+      }
+
+      var getCurrItem = function(){
+        return obj[current]
+      };
+      return{
+        next:next,
+        isDone:isDone,
+        getCurrItem:getCurrItem,
+        length:length
+      }
+    }
+
+    // 改写compare函数
+    var compare = function(interator1,interator2){
+      if(interator1.length!==interator2.length){
+        console.log('interator1和interator1不相等');
+      };
+      while(!interator1.isDone() && !interator2.isDone()){
+        if(interator1.getCurrItem()!==interator2.getCurrItem()){
+          throw new Error('interator1和interator1不相等');
+        }
+        interator1.next();
+        interator2.next();
+      }
+      console.log('interator1和interator1相等')
+    }
+
+    var interator1 = Interator([1,2,3]);
+    var interator2 = Interator([1,2,3]);
+
+    compare(interator1,interator2);
+
+
+    var reverseEach = function(ary,callback){
+      for(var l = ary.length-1;l>=0;l--){
+        callback(l,ary[l]);
+      }
+    };
+
+    reverseEach([0,1,2],function(i,n){
+      console.log(n);
+    })
+
+    // 中止迭代器
+    var eachBreak = function(ary,callback){
+      for(var i=0,l = ary.length;i<l;i++){
+        if(callback.call(ary[i],i,ary[i])===false){
+          break
+        }
+      }
+    };
+    eachBreak([1,2,3,4,5],function(i,n){
+      if(n<3){
+        return false
+      }
+      console.log(n);
+    });
+
+
+    // 大量用if else不好
+    function isIE(){
+      console.log('ie')
+      return false
+    };
+    function isChrome(){
+      console.log('chrome')
+      return false
+    };
+    function isOpera(){
+      console.log('opera')
+      return false
+    }
+    var iteratorObj = function(){
+      for(var i=0,fn;fn = arguments[i++];){
+        var uploadObj = fn();
+        if(uploadObj!==false){
+          return uploadObj
+        }else{
+          break
+        }
+      }
+    }
+    iteratorObj(isIE,isChrome,isOpera)
+  </script>
+</body>
+</html>
