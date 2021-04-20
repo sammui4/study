@@ -20,7 +20,7 @@
       return a
     }
     var multInstance = mult(1,2,3);
-    console.log(multInstance)
+
 
     // 假如做缓存
     var cache = {};
@@ -37,7 +37,7 @@
     }
     console.log(mult1(1,2,3));
 
-
+    // 使用闭包，不暴露变量
     var mult2 = (function(){
       var cache = {};
       return function(){
@@ -53,10 +53,11 @@
       }
     })()
     var multInstance2 = mult2(1,2,3,4)
-    console.log(multInstance2)
+
 
     var mult3 = (function(){
       var cache = {};
+      // 封装函数
       var calculate = function(){
         var a = 1;
         for(var i=0,l = arguments.length;i<l;i++){
@@ -107,6 +108,7 @@
     extend.call();
     extend.call();
 
+    
     var extent1 = {
       value:0,
       call:function(){
