@@ -61,7 +61,7 @@
     // console.log(Type.isArray([1,2,3]));
 
 
-    // AOP
+    // AOP（面向切面编程）
     Function.prototype.before = function(beforefn){
       var _self = this;
       return function(){
@@ -106,7 +106,7 @@
 
     obj.func1(arr);
 
-    // 其他应用
+    // 其他应用,函数柯里化
     var cost = (function(){
       var args = [];
       return function(){
@@ -189,7 +189,7 @@
       console.log(1)
     },500);
 
-    // 分时函数
+    // 分时函数,优化性能专用
     var timeChunk = function(ary,fn,count){
       var obj,t;
       var len = ary.length;
@@ -217,7 +217,7 @@
       var divs = document.createElement('div');
       divs.innerHTML = n;
       document.body.appendChild(divs);
-    })
+    },2)
     renderFriendList();
 
 
@@ -235,10 +235,40 @@
       addEvent(elem,type,handler)
     };
 
-    var div = document.getElementById('div1');
-    addEvent(div,'click',function(){
-      console.log(123)
-    })
+    // 稍稍延长页面ready的时间
+    var addEvent1 = (function(){
+      if(window.addEventListener){
+        return function(elem,type,handler){
+          elem.addEventListener(type,handler,false);
+        }
+      }
+      if(window.attachEvent){
+        return function(elem,type,handler){
+          elem.attachEvent('on'+type,handler)
+        }
+      }
+    })();
+
+    // 惰性加载
+    var addEvent2 = function(elem,type,handler){
+      if(window.addEventListener){
+        addEvent2 = function(elem,type,handler){
+          elem.addEventListener(type,handler,false);
+        }
+      }else if(window.attachEvent){
+        addEvent2 = function(elem,type,handler){
+          elem.attachEvent('on'+type,handler);
+        }
+      }
+      addEvent2(elem,type,handler)
+    }
+
+    // var div = document.getElementById('div1');
+    // addEvent(div,'click',function(){
+    //   console.log(123)
+    // })
+
+
   </script>
 </body>
 </html>
