@@ -2,21 +2,23 @@
  * @Author: w
  * @Date: 2021-05-25 21:25:54
  * @LastEditors: w
- * @LastEditTime: 2021-05-25 22:21:09
+ * @LastEditTime: 2021-05-25 22:46:33
  */
 import { createApp } from 'vue'
 import App from './App.vue'
-import './registerServiceWorker'
+// import './registerServiceWorker'
 import router from './router'
 import store from './store'
 
+
+const isQiankun = window.__POWERED_BY_QIANKUN__
 let instance = null;
 function render(props = {}) {
   const { container } = props;
   instance = createApp(App).use(store).use(router).mount(container ? container.querySelector('#app') : '#app')
 }
 
-if(!window.__POWERED_BY_QIANKUN__){
+if(!isQiankun){
   render()
 }
 

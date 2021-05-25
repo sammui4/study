@@ -2,11 +2,11 @@
  * @Author: w
  * @Date: 2021-05-22 17:05:00
  * @LastEditors: w
- * @LastEditTime: 2021-05-25 22:11:57
+ * @LastEditTime: 2021-05-25 22:46:42
  */
 import { createApp } from 'vue'
 import App from './App.vue'
-import './registerServiceWorker'
+// import './registerServiceWorker'
 import router from './router'
 import store from './store'
 import { registerMicroApps, start, setDefaultMountApp } from 'qiankun'
