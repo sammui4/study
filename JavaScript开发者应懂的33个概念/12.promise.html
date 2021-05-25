@@ -1,0 +1,83 @@
+<!--
+ * @Author: w
+ * @Date: 2019-10-28 22:13:05
+ * @LastEditors: w
+ * @LastEditTime: 2019-10-30 23:33:29
+ -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>12.promise</title>
+</head>
+<body>
+  <script>
+    // 在旧式回调 API 中创建 Promise
+    const wait = ms => new Promise(resolve=> setTimeout(resolve,ms));
+    wait(1000).then(()=>{
+      console.log('1秒后');
+    })
+
+    // 组合
+    // Promise.resolve() 和 Promise.reject() 是手动创建一个已经 resolve 或者 reject 的 Promise 快捷方法。它们有时很有用。
+    // 通常，我们递归调用一个由异步函数组成的数组时相当于一个 Promise 链：
+    // Promise.resolve().then(function1).then(function2).then(function3);
+
+    // 时序
+    // 为了避免意外，即使是一个已经变成 resolve 状态的 Promise，传递给 then() 的函数也总是会被异步调用：
+    Promise.resolve().then(()=>console.log(2));
+    console.log(1);
+
+     
+     
+    // 每次调用then都会返回一个新创建的promise对象
+    aPromise =new Promise((resolve)=>{
+      resolve()
+    })
+
+    thenPromise = aPromise.then((value)=>{
+      console.log(value);
+    })
+
+    catchPromise = thenPromise.catch((error)=>{
+      console.log(error);
+    })
+
+    console.log(aPromise!==thenPromise);
+    console.log(thenPromise!==catchPromise);
+
+    // 1。对同一个promise对象同时调用‘then’方法
+    a1Promise = new Promise((resolve)=>{
+      resolve(1)
+    })
+    
+    a1Promise.then((value)=>{
+      return value*10
+    })
+
+    a1Promise.then((value)=>{
+      return value*10
+    })
+    
+    a1Promise.then((value)=>{
+      console.log(value);
+    })
+
+    // 2.对`then`进行promise chain方式进行调用
+    bPromise = new Promise((resolve)=>{
+      resolve(1)
+    })
+    bPromise.then((value)=>{
+      return value * 10
+    }).then((value)=>{
+      return value * 10
+    })
+
+
+    
+  </script>
+ 
+</body>
+</html>

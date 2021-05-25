@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>class的基本语法</title>
+</head>
+<body>
+  <script>
+    function Point(x,y){
+      this.x = x;
+      this.y = y;
+    }
+    Point.prototype.toString = function(){
+      return '(' + this.x + ', ' + this.y + ')'; 
+    }
+
+    var p = new Point(1,2);
+
+  </script>
+  <script>
+
+    class Point1{
+      constructor(x,y){
+        this.x = x;
+        this.y = y;
+      }
+      toString(){
+        return '(' + this.x + ', ' + this.y + ')';
+      }
+      toValue() {
+
+      }
+    }
+    // Point类除了构造方法，还定义了一个toString()方法。注意，定义toString()方法的时候，前面不需要加上function这个关键字，直接把函数定义放进去了就可以了。另外，方法与方法之间不需要逗号分隔，加了会报错。
+
+    // 使用时也是new
+    const entity1 = new Point1(1,2);
+    console.log(entity1.__proto__.constructor);
+
+
+    // 上面的这种写法也等同于
+    Point2.prototype = {
+      constructor(){
+
+      },
+      toString(){
+
+      },
+      toValue() {
+
+      },
+    }
+
+    
+  </script>
+</body>
+</html>

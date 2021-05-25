@@ -7,8 +7,29 @@
     <title>10.1节点层次</title>
 </head>
 <body>
+    <div id="nav">1</div>
+    <div id="naV">2</div>
+    <div id="myDiv" class="bd one" title="Body text" lang="en" dir="ltr"></div>
     <script>
         // 每个节点都有一个node属性,用于表明节点的类型
+    </script>
+    <script>
+        // 2.文档信息
+        // document
+        // URL、domain、referrer
+        // 这3个属性中，只有domain是可以设置的
+
+    </script>
+    <script>
+        // 3.查找元素
+        // ie9以上区分大小写
+        var one = document.getElementById('nav');
+        var two = document.getElementById('naV');
+        console.log(one,two);
+    </script>
+    <script>
+        var div = document.getElementById('myDiv');
+        div.setAttribute('class','w');              //直接把原来的所有class 替换掉
     </script>
 </body>
 </html>
