@@ -2,7 +2,8 @@
   <div id="nav">
     <router-link to="/">跳转到父页面</router-link> |
     <router-link to="/vue">跳转到子页面</router-link> |
-    <router-link to="/vue/child">跳转到子页面的具体页面</router-link>
+    <router-link to="/vue/child">跳转到子页面的具体页面</router-link> |
+    <router-link to="/vue/child2">跳转到子页面的具体页面</router-link>
   </div>
   <router-view/>
   <div id="vue"></div>
