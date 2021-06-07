@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>promise</title>
+</head>
+<body>
+  <script>
+
+    // catch
+    // 已经变成resolved，无法再次抛出错误
+    const promise1 = new Promise((resolve,reject)=>{
+      resolve('ok');
+      throw new Error('test');
+    })
+    promise1.then((value)=>console.log(value)).catch(e=>console.log(e))
+
+
+    // Promise 对象的错误具有“冒泡”性质，会一直向后传递，直到被捕获为止。也就是说，错误总是会被下一个catch语句捕获。
+    // getJSON('/post/1.json').then(function(post) {
+    //   return getJSON(post.commentURL);
+    // }).then(function(comments) {
+    //   // some code
+    // }).catch(function(error) {
+    //   // 处理前面三个Promise产生的错误
+    // });
+
+
+    //  Promise 对象的错误具有“冒泡”性质，会一直向后传递，直到被捕获为止
+
+    // 下一轮“事件循环”再抛出错误
+    const promise2 = new Promise((resolve,reject)=>{
+      resolve('ok');
+      setTimeout(()=>{
+        throw new Error('test')
+      })
+    })
+    promise2.then((value)=>console.log(value)).catch(e=>console.log(e))
+
+
+    // catch方法返回的是一个Promise对象，因此后面还可以继续调用then()方法。如果没有报错，则会跳过catch()方法。
+    const promise3 = function(){
+      return new Promise((resolve,reject)=>{
+        reject(x+2)
+      })
+    }
+    promise3().catch(e=>console.log(e)).then(()=>{console.log('carry on ')})
+
+
+    // catch()方法之中，还能再抛出错误。
+
+    
+  </script>
+  <script>
+    //  Promise.all
+    const p1 = new Promise((resolve, reject) => {
+      resolve('hello');
+    })
+    .then(result => result)
+    .catch(e => e);
+
+    // 如果作为参数的 Promise 实例，自己定义了catch方法，那么它一旦被rejected，并不会触发Promise.all()的catch方法
+    const p2 = new Promise((resolve, reject) => {
+      throw new Error('报错了1');
+    })
+    .then(result => result)
+    .catch(e => e); 
+
+    // 没有catch方法，会走promise的catch方法
+    const p3 = new Promise((resolve,reject)=>{
+      throw new Error('报错了2');
+    })
+
+    Promise.all([p1,p2]).then((res)=>{
+      console.log(res)
+    }).catch((err)=>{
+      console.log(err)
+    })
+
+    Promise.all([p1,p3]).then((res)=>{
+      console.log(res)
+    }).catch((err)=>{
+      console.log(err)
+    })
+  </script>
+  <script>
+    //  allSettled
+
+    // 有时候，我们不关心异步操作的结果，只关心这些操作有没有结束。这时，Promise.allSettled()方法就很有用。如果没有这个方法，想要确保所有操作都结束，就很麻烦。Promise.all()方法无法做到这一点。
+  </script>
+</body>
+</html>
