@@ -2,7 +2,7 @@
  * @Author: w
  * @Date: 2021-06-13 14:41:29
  * @LastEditors: w
- * @LastEditTime: 2021-06-13 17:59:20
+ * @LastEditTime: 2021-06-14 00:23:26
  */
 
 
@@ -74,5 +74,41 @@ void main() {
   print(printUserInfo2('monk',age:28,sex:'男'));
 
 
-  // 把fang'h
+  // 箭头函数
+  var fn1 = ()=>{
+    print('1')        //只能写1行
+  };
+  fn1();
+
+
+  // 自执行方法
+  ((int n){
+    print(n);
+  })(12);
+
+
+  // 递归
+  var sum = 1;
+  fn2(int n){
+    sum*= n;
+    if(n==1){
+      return;
+    }
+    fn2(n-1);
+  }
+  fn2(5);
+  print(sum);
+
+
+  var sum3 = 0;
+  fn3(int n){
+    sum3+=n;
+    if(n==0){
+      return;
+    }
+    fn3(n-1);
+  }
+
+  fn3(100);
+  print(sum3);
 }
