@@ -2,11 +2,12 @@
  * @Author: w
  * @Date: 2021-06-16 22:44:03
  * @LastEditors: w
- * @LastEditTime: 2021-06-21 23:49:44
+ * @LastEditTime: 2021-06-21 23:50:43
  */
 class Person {
   String name;
   num age;
+  // Person(this.name,this.age);
   Person.xxx(this.name,this.age);
   void printInfo(){
     print('${this.name}===${this.age}');
@@ -17,6 +18,7 @@ class Person {
 }
 class Web extends Person{
   var sex;
+  // Web(String name, num age,String sex) : super(name, age){      // 通过super关键字把参数传给父类
   Web(String name, num age,String sex) : super.xxx(name, age){      // 通过super关键字把参数传给父类
     // 继承的实例化
     this.sex = sex;
