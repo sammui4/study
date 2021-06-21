@@ -2,7 +2,7 @@
  * @Author: w
  * @Date: 2021-06-16 22:44:03
  * @LastEditors: w
- * @LastEditTime: 2021-06-16 22:52:50
+ * @LastEditTime: 2021-06-21 23:47:41
  */
 class Person {
   String name;
@@ -17,13 +17,13 @@ class Person {
 }
 class Web extends Person{
   var sex;
-  Web(String name, num age,String sex) : super(name, age){
+  Web(String name, num age,String sex) : super(name, age){      // 通过super关键字把参数传给父类
     // 继承的实例化
     this.sex = sex;
   }
   run(){
     super.work();   //调用父类的方法
-    print('${this.name}===${this.age}');
+    print('${this.name}===${this.age}===${this.sex}');
   }
   // 覆写父类的方法，直接写
   @override               //建议加上
