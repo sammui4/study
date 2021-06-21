@@ -2,7 +2,7 @@
  * @Author: w
  * @Date: 2021-06-14 21:54:37
  * @LastEditors: w
- * @LastEditTime: 2021-06-21 23:31:00
+ * @LastEditTime: 2021-06-21 23:32:12
  */
 class Rect{
   num height;
@@ -21,11 +21,17 @@ class Rect{
   set Areaheight(value){
     this.height = value;
   }
+  setAreaheight(value){
+    this.height = value;
+  }
 }
 
 void main(){
   Rect r = new Rect(10, 4);
   r.Areaheight = 6;
+  print("面积${r.area}");
+  print("面积${r.getArea()}");
+  r.setAreaheight(8);
   print("面积${r.area}");
   print("面积${r.getArea()}");
 }
