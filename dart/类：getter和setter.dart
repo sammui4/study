@@ -2,7 +2,7 @@
  * @Author: w
  * @Date: 2021-06-14 21:54:37
  * @LastEditors: w
- * @LastEditTime: 2021-06-14 22:10:15
+ * @LastEditTime: 2021-06-21 23:28:50
  */
 class Rect{
   num height;
@@ -13,7 +13,7 @@ class Rect{
     this.width = width;
   }
   get area{
-    return this.height*this.width;
+    return this.height*this.width;      // 直接通过访问属性的方法访问area
   }
   set Areaheight(value){
     this.height = value;
