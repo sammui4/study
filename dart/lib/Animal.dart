@@ -2,7 +2,7 @@
  * @Author: w
  * @Date: 2021-06-14 17:55:12
  * @LastEditors: w
- * @LastEditTime: 2021-06-14 18:28:22
+ * @LastEditTime: 2021-06-21 23:21:55
  */
 class Animal{
   // 必须抽离出去，并且加下划线，才能定义为私有
@@ -35,6 +35,6 @@ class Animal{
     print('这是一个私有方法');
   }
   execRun(){
-    this._run();      //类里面的方法调用
+    this._run();      //类里面的调用私有方法
   }
 }
