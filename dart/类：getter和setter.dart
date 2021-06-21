@@ -2,7 +2,7 @@
  * @Author: w
  * @Date: 2021-06-14 21:54:37
  * @LastEditors: w
- * @LastEditTime: 2021-06-21 23:32:12
+ * @LastEditTime: 2021-06-21 23:37:05
  */
 class Rect{
   num height;
@@ -12,6 +12,10 @@ class Rect{
     this.height = height;
     this.width = width;
   }
+  // Rect.two(num height,num width):height=2,width =10{
+  //   this.height = height;
+  //   this.width = width;
+  // }
   get area{
     return this.height*this.width;      // 直接通过访问属性的方法访问area
   }
