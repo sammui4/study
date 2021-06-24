@@ -2,7 +2,7 @@
  * @Author: w
  * @Date: 2021-06-21 20:51:17
  * @LastEditors: w
- * @LastEditTime: 2021-06-21 22:48:44
+ * @LastEditTime: 2021-06-22 21:47:46
  */
 
 // 抽象类用于约束子类方法，用于定义标准
@@ -53,8 +53,9 @@ void main(){
   Cat c = new Cat();
   c.eat();
 
-
+  // 子类只能使用父类的方法，如下定义
   Animal e = new Dog();
+  e.eat();
   // e.run();    //没有这个方法了
 
 
